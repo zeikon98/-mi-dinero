@@ -1,8 +1,8 @@
-# Zeikon Wealth v1.3
+# Zeikon Wealth v1.4
 
-- Historial detallado de quincenas
-- Reabrir una quincena cerrada para corregirla
-- Acceso rápido a la quincena abierta desde Home
-- Eliminar cargas de gasolina equivocadas
-- Pantalla Activity mejor organizada
-- Persistencia local y respaldo
+- Confirmación detallada antes de cerrar una quincena
+- Respaldo automático antes del cierre
+- Indicador visible de datos guardados
+- Editar y eliminar cargas de gasolina
+- Cálculo automático de precio por litro al editar
+- Base estable para uso real

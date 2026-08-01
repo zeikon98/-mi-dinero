@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#080d19">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
-<title>Zeikon Wealth v1.3</title>
+<title>Zeikon Wealth v1.4</title>
 <style>
 :root{--bg:#080d19;--panel:#111827;--panel2:#172033;--line:#2b3950;--text:#f8fafc;--muted:#9aa8be;--gold:#d6b65e;--blue:#4f7cff;--green:#39d27d;--cyan:#42cce8;--purple:#a970ff;--yellow:#f6c64f;--red:#ff6b75}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -25,7 +25,7 @@ main{padding:4px 16px 110px;max-width:760px;margin:auto}.screen{display:none}.sc
 .label{font-size:13px;color:var(--muted)}label{display:block;margin:15px 0 7px;color:var(--muted);font-size:13px}
 input,select,textarea{width:100%;padding:15px 14px;border:1px solid #33425b;border-radius:14px;background:#0b1322;color:var(--text);font-size:17px;outline:none}
 button{border:0;cursor:pointer}.primary{width:100%;padding:16px;border-radius:15px;background:linear-gradient(135deg,#4f7cff,#315ee8);color:white;font-weight:800;font-size:17px;margin-top:16px}
-.secondary{width:100%;padding:14px;border-radius:15px;background:var(--panel2);border:1px solid #33425b;color:white;font-weight:700;margin-top:10px}.danger{border-color:#6d3039;color:#ffadb4;background:#24151b}.mini{width:auto;padding:8px 11px;margin:8px 0 0;font-size:12px}
+.secondary{width:100%;padding:14px;border-radius:15px;background:var(--panel2);border:1px solid #33425b;color:white;font-weight:700;margin-top:10px}.danger{border-color:#6d3039;color:#ffadb4;background:#24151b}.mini{width:auto;padding:9px 11px;margin:8px 6px 0 0;font-size:12px}
 .notice{padding:13px;border-radius:14px;background:#162544;border:1px solid #274273;color:#c8dcff;font-size:13px;margin:12px 0}
 .bottom-nav{position:fixed;left:0;right:0;bottom:0;padding:9px 10px calc(9px + env(safe-area-inset-bottom));background:rgba(8,13,25,.96);backdrop-filter:blur(18px);display:grid;grid-template-columns:repeat(5,1fr);gap:5px;border-top:1px solid #1e293b;z-index:10}
 .navbtn{padding:8px 4px;background:transparent;color:var(--muted);font-size:11px;border-radius:13px}.navbtn b{display:block;font-size:21px;line-height:24px;margin-bottom:3px}.navbtn.active{color:white;background:#172033}.fab{background:linear-gradient(135deg,#4f7cff,#315ee8);color:white;transform:translateY(-10px);box-shadow:0 10px 24px rgba(49,94,232,.38)}
@@ -34,7 +34,7 @@ button{border:0;cursor:pointer}.primary{width:100%;padding:16px;border-radius:15
 </style>
 </head>
 <body>
-<header><div class="brand"><div class="shield">Z</div><div><h1>Zeikon Wealth</h1><div class="tagline">Consistency Creates Wealth · v1.3</div></div></div></header>
+<header><div class="brand"><div class="shield">Z</div><div><h1>Zeikon Wealth</h1><div class="tagline">Consistency Creates Wealth · v1.4</div><div id="saveStatus" class="small" style="margin-top:4px;color:#39d27d">Datos guardados</div></div></div></header>
 <main>
 <section id="home" class="screen active">
 <div class="notice">Actualización 1.2.1: navegación corregida. Fuel, Pago, Vault y More ya responden.</div>
@@ -47,14 +47,6 @@ button{border:0;cursor:pointer}.primary{width:100%;padding:16px;border-radius:15
 <div class="card kpi"><div class="label">Estado</div><div class="value purple" id="periodState">Sin iniciar</div></div>
 </div>
 <div class="card"><div class="row"><span>Próximo pago</span><strong id="nextPay">2 ago 2026</strong></div><div class="row"><span>Ahorro base</span><strong id="savingBase">$500 USD</strong></div><div class="row"><span>Gasolina</span><strong id="fuelBase">$800 MXN</strong></div></div>
-
-<div class="card" id="openPeriodHome">
-  <div class="eyebrow">Quincena actual</div>
-  <div class="row"><span>Estado</span><strong id="homePeriodStatus">Sin iniciar</strong></div>
-  <div class="row"><span>Gasolina registrada</span><strong id="homeFuelSpent">$0 MXN</strong></div>
-  <button class="primary" id="homeContinuePeriod">Continuar quincena</button>
-  <button class="secondary" id="homeClosePeriod">Cerrar quincena</button>
-</div>
 <div class="card"><div class="eyebrow">Actividad reciente</div><div id="recent" class="small" style="margin-top:12px">Sin movimientos.</div></div>
 </section>
 
@@ -86,6 +78,18 @@ button{border:0;cursor:pointer}.primary{width:100%;padding:16px;border-radius:15
 <button class="primary" id="saveFuel">Guardar carga</button></div>
 <div class="card"><div class="row"><span>Gastado</span><strong id="fuelSpent">$0 MXN</strong></div><div class="row"><span>Presupuesto</span><strong id="fuelBudget">$800 MXN</strong></div><div class="row"><span>Resultado</span><strong id="fuelDelta">$800 al sobre</strong></div></div>
 <div class="card"><h3>Cargas</h3><div id="fuelList" class="small">Sin cargas.</div></div>
+<div class="card hidden" id="editFuelCard">
+  <h3>Editar carga</h3>
+  <input type="hidden" id="editFuelId">
+  <label>Vehículo</label><select id="editFuelVehicle"><option>Bajaj Pulsar N250</option><option>Toyota Corolla 2007</option></select>
+  <label>Fecha</label><input type="date" id="editFuelDate">
+  <label>Total MXN</label><input type="number" step="0.01" id="editFuelTotal">
+  <label>Litros</label><input type="number" step="0.001" id="editFuelLiters">
+  <label>Precio por litro</label><input type="number" step="0.01" id="editFuelPrice">
+  <label>Odómetro</label><input type="number" id="editFuelOdo">
+  <button class="primary" id="saveFuelEdit">Guardar cambios</button>
+  <button class="secondary" id="cancelFuelEdit">Cancelar</button>
+</div>
 </section>
 
 <section id="vault" class="screen">
@@ -104,24 +108,9 @@ button{border:0;cursor:pointer}.primary{width:100%;padding:16px;border-radius:15
 </div>
 </section>
 
-<section id="activity" class="screen">
-<div class="card">
-  <div class="eyebrow">Activity</div>
-  <h2>Historial de quincenas</h2>
-  <div id="periodHistory" class="small">Sin quincenas.</div>
-</div>
-<div class="card">
-  <h2>Movimientos</h2>
-  <div id="history" class="small">Sin movimientos.</div>
-</div>
-</section>
+<section id="activity" class="screen"><div class="card"><div class="eyebrow">Activity</div><h2>Historial</h2><div id="history" class="small">Sin movimientos.</div></div></section>
 
 <section id="more" class="screen">
-<div class="card">
-<div class="eyebrow">Navegación</div>
-<h2>Más herramientas</h2>
-<button class="secondary" id="openActivity">Ver historial completo</button>
-</div>
 <div class="card"><div class="eyebrow">More</div><h2>Configuración</h2>
 <label>Nombre</label><input id="cfgName">
 <label>Fondo USD inicial</label><input type="number" id="cfgUsd">
@@ -158,7 +147,13 @@ const defaults={profile:{name:'Óscar'},settings:{initialUsd:1000,savingUsd:500,
 let state=JSON.parse(localStorage.getItem('zeikon-v1-beta')||'null')||structuredClone(defaults);
 function ensure(){state.profile=state.profile||defaults.profile;state.settings={...defaults.settings,...(state.settings||{})};state.accounts={...structuredClone(defaults.accounts),...(state.accounts||{})};['periods','fuelLogs','movements','subscriptions','credits'].forEach(k=>state[k]=state[k]||[])}
 ensure();
-function save(){localStorage.setItem('zeikon-v1-beta',JSON.stringify(state));render()}
+function save(){
+  const status=$('saveStatus');
+  if(status){status.textContent='Guardando…';status.style.color='#f6c64f'}
+  localStorage.setItem('zeikon-v1-beta',JSON.stringify(state));
+  render();
+  setTimeout(()=>{if(status){status.textContent='Datos guardados';status.style.color='#39d27d'}},250);
+}
 function go(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));$(id).classList.add('active');document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.go===id));scrollTo(0,0);render()}
 document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
 document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('.tabpage').forEach(x=>x.classList.add('hidden'));$(b.dataset.tab).classList.remove('hidden')});
@@ -171,7 +166,30 @@ function periodFromInputs(){return{id:state.openPeriod?.id||crypto.randomUUID(),
 function preview(){const p=periodFromInputs(),c=calc(p);$('periodPreview').innerHTML=`<div class="row"><span>Pesos recibidos</span><strong>${mx(c.mxReceived)}</strong></div><div class="row"><span>Sobre Mandado</span><strong>${mx(c.grocerySurplus)}</strong></div><div class="row"><span>Efectivo antes de gasolina</span><strong>${mx(c.cashBeforeFuel)}</strong></div>`}
 ['pPay','pSaving','pExtraUsd','pExtraMxn','pUsTicket','pChanged','pRate','pMxTicket'].forEach(id=>$(id).oninput=preview);
 $('savePeriod').onclick=()=>{const p=periodFromInputs();Object.assign(p,calc(p));state.openPeriod=p;const i=state.periods.findIndex(x=>x.id===p.id);if(i>=0)state.periods[i]=p;else state.periods.unshift(p);save();alert('Quincena guardada como abierta')}
-$('closePeriod').onclick=()=>{const p=state.openPeriod;if(!p)return alert('No hay quincena abierta');Object.assign(p,calc(p));const spent=fuelSpent(),delta=state.settings.fuelBudget-spent;if(delta>=0){state.accounts.fuel.balance+=delta;log('deposit','fuel',delta,'MXN','Sobrante gasolina')}else p.cashBeforeFuel+=delta;state.accounts.grocery.balance+=p.grocerySurplus;state.accounts.usd.balance+=p.saving;state.accounts.cash.balance+=p.cashBeforeFuel;log('deposit','usd',p.saving,'USD','Ahorro quincenal');if(p.grocerySurplus)log('deposit','grocery',p.grocerySurplus,'MXN','Sobrante mandado');if(p.cashBeforeFuel)log(p.cashBeforeFuel>0?'deposit':'withdraw','cash',Math.abs(p.cashBeforeFuel),'MXN','Cierre de quincena');p.status='closed';p.fuelSpent=spent;p.closedAt=new Date().toISOString();state.openPeriod=null;const d=new Date(state.settings.nextPay+'T12:00:00');d.setDate(d.getDate()+state.settings.frequencyDays);state.settings.nextPay=d.toISOString().slice(0,10);save();alert('Quincena cerrada')}
+$('closePeriod').onclick=()=>{
+  const p=state.openPeriod;
+  if(!p)return alert('No hay quincena abierta');
+  Object.assign(p,calc(p));
+  const spent=fuelSpent(),delta=state.settings.fuelBudget-spent;
+  const message=`Revisa antes de cerrar:\n\nAhorro: ${usd(p.saving)}\nSobrante mandado: ${mx(p.grocerySurplus)}\nGasolina gastada: ${mx(spent)}\nDisponible estimado: ${mx(p.cashBeforeFuel+(delta<0?delta:0))}\n\nAl cerrar se actualizarán tus saldos.`;
+  if(!confirm(message))return;
+  downloadBackup('respaldo-antes-cierre');
+  if(delta>=0){state.accounts.fuel.balance+=delta;log('deposit','fuel',delta,'MXN','Sobrante gasolina')}
+  else p.cashBeforeFuel+=delta;
+  state.accounts.grocery.balance+=p.grocerySurplus;
+  state.accounts.usd.balance+=p.saving;
+  state.accounts.cash.balance+=p.cashBeforeFuel;
+  log('deposit','usd',p.saving,'USD','Ahorro quincenal');
+  if(p.grocerySurplus)log('deposit','grocery',p.grocerySurplus,'MXN','Sobrante mandado');
+  if(p.cashBeforeFuel)log(p.cashBeforeFuel>0?'deposit':'withdraw','cash',Math.abs(p.cashBeforeFuel),'MXN','Cierre de quincena');
+  p.status='closed';p.fuelSpent=spent;p.closedAt=new Date().toISOString();
+  state.openPeriod=null;
+  const d=new Date(state.settings.nextPay+'T12:00:00');
+  d.setDate(d.getDate()+state.settings.frequencyDays);
+  state.settings.nextPay=d.toISOString().slice(0,10);
+  save();
+  alert('Quincena cerrada correctamente');
+}
 $('fDate').value=today();$('pDate').value=today();
 $('fLiters').oninput=()=>{let l=+$('fLiters').value,t=+$('fTotal').value;if(l&&t)$('fPrice').value=(t/l).toFixed(2)};$('fTotal').oninput=()=>$('fLiters').dispatchEvent(new Event('input'));
 $('saveFuel').onclick=()=>{if(!state.openPeriod)return alert('Primero abre una quincena');const total=+$('fTotal').value;if(!total)return alert('Ingresa total');state.fuelLogs.push({id:crypto.randomUUID(),periodId:state.openPeriod.id,vehicle:$('fVehicle').value,date:$('fDate').value,total,liters:+$('fLiters').value||0,price:+$('fPrice').value||0,odometer:+$('fOdo').value||0});['fTotal','fLiters','fPrice','fOdo'].forEach(i=>$(i).value='');save()}
@@ -181,55 +199,61 @@ $('saveCredit').onclick=()=>{if(!$('cName').value||!+$('cBalance').value)return;
 window.payCredit=id=>{const c=state.credits.find(x=>x.id===id),amt=+prompt('Cantidad del abono',c.monthly||0);if(!amt)return;c.balance=Math.max(0,c.balance-amt);if(c.balance===0)c.status='paid';log('withdraw','cash',amt,'MXN','Abono crédito '+c.name);state.accounts.cash.balance=Math.max(0,state.accounts.cash.balance-amt);save()}
 window.cancelSub=id=>{const s=state.subscriptions.find(x=>x.id===id);s.cancelled=!s.cancelled;save()}
 $('saveCfg').onclick=()=>{state.profile.name=$('cfgName').value||'Óscar';Object.assign(state.settings,{initialUsd:+$('cfgUsd').value,savingUsd:+$('cfgSaving').value,usGroceriesUsd:+$('cfgUsGroceries').value,mxGroceries:+$('cfgMxGroceries').value,medicalUsd:+$('cfgMedical').value,grandma:+$('cfgGrandma').value,clarissa:+$('cfgClarissa').value,fuelBudget:+$('cfgFuel').value,frequencyDays:+$('cfgFreq').value,nextPay:$('cfgNext').value});save();alert('Configuración guardada')}
-$('exportBtn').onclick=()=>{const b=new Blob([JSON.stringify(state,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='zeikon-wealth-backup.json';a.click()}
+function downloadBackup(prefix='zeikon-wealth-backup'){
+  const b=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(b);
+  a.download=`${prefix}-${today()}.json`;
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+$('exportBtn').onclick=()=>downloadBackup()
 $('importFile').onchange=async e=>{state=JSON.parse(await e.target.files[0].text());ensure();save();alert('Respaldo importado')}
 $('resetBtn').onclick=()=>{if(confirm('¿Borrar todos los datos?')){state=structuredClone(defaults);save()}}
 
-function currentFuelEntries(){
-  if(!state.openPeriod) return [];
-  return state.fuelLogs.filter(f=>f.periodId===state.openPeriod.id);
-}
+window.editFuel=function(id){
+  const f=state.fuelLogs.find(x=>x.id===id);
+  if(!f)return;
+  $('editFuelId').value=f.id;
+  $('editFuelVehicle').value=f.vehicle;
+  $('editFuelDate').value=f.date;
+  $('editFuelTotal').value=f.total;
+  $('editFuelLiters').value=f.liters||0;
+  $('editFuelPrice').value=f.price||0;
+  $('editFuelOdo').value=f.odometer||0;
+  $('editFuelCard').classList.remove('hidden');
+  $('editFuelCard').scrollIntoView({behavior:'smooth'});
+};
 window.deleteFuel=function(id){
-  if(!confirm('¿Eliminar esta carga de gasolina?')) return;
-  state.fuelLogs=state.fuelLogs.filter(f=>f.id!==id);
+  if(!confirm('¿Eliminar esta carga?'))return;
+  state.fuelLogs=state.fuelLogs.filter(x=>x.id!==id);
   save();
 };
-window.reopenPeriod=function(id){
-  const p=state.periods.find(x=>x.id===id);
-  if(!p) return;
-  if(state.openPeriod && state.openPeriod.id!==id){
-    return alert('Primero cierra la quincena que ya está abierta.');
-  }
-  p.status='open';
-  state.openPeriod=p;
-  save();
-  go('payday');
+
+function render(){ensure();const total=accountTotalMxn(),reserved=state.accounts.usd.balance*rate()+state.accounts.grocery.balance+state.accounts.fuel.balance+state.accounts.leftover.balance;$('hello').textContent='Buenos días, '+state.profile.name;$('netWorth').textContent=mx(total);$('available').textContent=mx(state.accounts.cash.balance);$('reserved').textContent=mx(reserved);$('usdTotal').textContent=usd(state.accounts.usd.balance);$('envTotal').textContent=mx(state.accounts.grocery.balance+state.accounts.fuel.balance+state.accounts.leftover.balance);$('cashTotal').textContent=mx(state.accounts.cash.balance);$('periodState').textContent=state.openPeriod?'En proceso':'Sin iniciar';$('nextPay').textContent=new Date(state.settings.nextPay+'T12:00:00').toLocaleDateString('es-MX',{day:'numeric',month:'short',year:'numeric'});$('savingBase').textContent=usd(state.settings.savingUsd);$('fuelBase').textContent=mx(state.settings.fuelBudget);$('payMode').classList.toggle('hidden',today()!==state.settings.nextPay&&!state.openPeriod);const spent=fuelSpent(),delta=state.settings.fuelBudget-spent;$('fuelSpent').textContent=mx(spent);$('fuelBudget').textContent=mx(state.settings.fuelBudget);$('fuelDelta').textContent=delta>=0?mx(delta)+' al sobre':mx(Math.abs(delta))+' excedente';$('fuelList').innerHTML=(state.openPeriod?state.fuelLogs.filter(f=>f.periodId===state.openPeriod.id):[]).map(f=>`<div class="list-item"><strong>${f.vehicle}</strong><div class="row"><span>${f.date}</span><strong>${mx(f.total)}</strong></div><div class="small">${f.liters||0} L · ${f.price?mx(f.price)+'/L':''} · ${f.odometer?'Odómetro '+f.odometer:''}</div><button class="secondary mini" onclick="editFuel('${f.id}')">Editar</button><button class="secondary danger mini" onclick="deleteFuel('${f.id}')">Eliminar</button></div>`).join('')||'Sin cargas.';const acc=Object.entries(state.accounts);$('accountsList').innerHTML=acc.map(([id,a])=>`<div class="list-item"><div class="row"><strong>${a.name}</strong><strong class="${a.currency==='USD'?'cyan':'green'}">${a.currency==='USD'?usd(a.balance):mx(a.balance)}</strong></div></div>`).join('');$('mAccount').innerHTML=acc.map(([id,a])=>`<option value="${id}">${a.name}</option>`).join('');$('subsList').innerHTML=state.subscriptions.map(s=>`<div class="list-item"><div class="row"><div><strong>${s.name}</strong><div class="small">${s.date||'Sin fecha'} · ${s.method||'Sin método'}</div></div><strong>${s.currency==='USD'?usd(s.amount):mx(s.amount)}</strong></div><button class="secondary" onclick="cancelSub('${s.id}')">${s.cancelled?'Reactivar':'Cancelar'}</button></div>`).join('')||'Sin suscripciones.';$('creditsList').innerHTML=state.credits.map(c=>`<div class="list-item"><div class="row"><div><strong>${c.name}</strong><div class="small">${c.status==='paid'?'Liquidado':'Próximo '+(c.date||'sin fecha')}</div></div><strong>${mx(c.balance)}</strong></div>${c.status!=='paid'?`<button class="secondary" onclick="payCredit('${c.id}')">Registrar abono</button>`:''}</div>`).join('')||'Sin créditos.';$('history').innerHTML=state.movements.map(m=>`<div class="list-item"><div class="row"><div><strong>${state.accounts[m.account]?.name||m.account}</strong><div class="small">${new Date(m.date).toLocaleString('es-MX')} · ${m.note||''}</div></div><strong class="${m.type==='deposit'?'green':'red'}">${m.type==='deposit'?'+':'-'}${m.currency==='USD'?usd(m.amount):mx(m.amount)}</strong></div></div>`).join('')||'Sin movimientos.';$('recent').innerHTML=state.movements.slice(0,4).map(m=>`<div class="row"><span>${m.note||state.accounts[m.account]?.name}</span><strong class="${m.type==='deposit'?'green':'red'}">${m.type==='deposit'?'+':'-'}${m.currency==='USD'?usd(m.amount):mx(m.amount)}</strong></div>`).join('')||'Sin movimientos.';$('cfgName').value=state.profile.name;$('cfgUsd').value=state.settings.initialUsd;$('cfgSaving').value=state.settings.savingUsd;$('cfgUsGroceries').value=state.settings.usGroceriesUsd;$('cfgMxGroceries').value=state.settings.mxGroceries;$('cfgMedical').value=state.settings.medicalUsd;$('cfgGrandma').value=state.settings.grandma;$('cfgClarissa').value=state.settings.clarissa;$('cfgFuel').value=state.settings.fuelBudget;$('cfgFreq').value=String(state.settings.frequencyDays);$('cfgNext').value=state.settings.nextPay;if(state.openPeriod){const p=state.openPeriod;$('pDate').value=p.date;$('pPay').value=p.pay;$('pSaving').value=p.saving;$('pExtraUsd').value=p.extraUsd;$('pExtraMxn').value=p.extraMxn;$('pUsTicket').value=p.usTicket;$('pChanged').value=p.changed;$('pRate').value=p.rate;$('pMxTicket').value=p.mxTicket}else{$('pSaving').value=state.settings.savingUsd;$('pRate').value=rate()}preview()}
+
+$('editFuelLiters').oninput=()=>{
+  const l=+$('editFuelLiters').value,t=+$('editFuelTotal').value;
+  if(l&&t)$('editFuelPrice').value=(t/l).toFixed(2);
 };
-function renderPeriodHistory(){
-  $('periodHistory').innerHTML=state.periods.map(p=>{
-    const date=new Date((p.date||today())+'T12:00:00').toLocaleDateString('es-MX',{day:'numeric',month:'short',year:'numeric'});
-    const status=p.status==='closed'?'Cerrada':'En proceso';
-    const cash=Number(p.cashFinal ?? p.cashBeforeFuel ?? 0);
-    return `<div class="list-item">
-      <div class="row"><div><strong>${date}</strong><div class="small">${status}</div></div><strong>${usd(p.pay||0)}</strong></div>
-      <div class="row"><span>Ahorro</span><strong>${usd(p.saving||0)}</strong></div>
-      <div class="row"><span>Tipo de cambio</span><strong>$${Number(p.rate||0).toFixed(2)}</strong></div>
-      <div class="row"><span>Disponible calculado</span><strong>${mx(cash)}</strong></div>
-      ${p.status==='closed'?`<button class="secondary mini" onclick="reopenPeriod('${p.id}')">Reabrir para editar</button>`:''}
-    </div>`;
-  }).join('')||'Sin quincenas registradas.';
-}
-
-function render(){ensure();const total=accountTotalMxn(),reserved=state.accounts.usd.balance*rate()+state.accounts.grocery.balance+state.accounts.fuel.balance+state.accounts.leftover.balance;$('hello').textContent='Buenos días, '+state.profile.name;$('netWorth').textContent=mx(total);$('available').textContent=mx(state.accounts.cash.balance);$('reserved').textContent=mx(reserved);$('usdTotal').textContent=usd(state.accounts.usd.balance);$('envTotal').textContent=mx(state.accounts.grocery.balance+state.accounts.fuel.balance+state.accounts.leftover.balance);$('cashTotal').textContent=mx(state.accounts.cash.balance);$('periodState').textContent=state.openPeriod?'En proceso':'Sin iniciar';$('nextPay').textContent=new Date(state.settings.nextPay+'T12:00:00').toLocaleDateString('es-MX',{day:'numeric',month:'short',year:'numeric'});$('savingBase').textContent=usd(state.settings.savingUsd);$('fuelBase').textContent=mx(state.settings.fuelBudget);$('payMode').classList.toggle('hidden',today()!==state.settings.nextPay&&!state.openPeriod);const spent=fuelSpent(),delta=state.settings.fuelBudget-spent;$('fuelSpent').textContent=mx(spent);$('fuelBudget').textContent=mx(state.settings.fuelBudget);$('fuelDelta').textContent=delta>=0?mx(delta)+' al sobre':mx(Math.abs(delta))+' excedente';$('fuelList').innerHTML=currentFuelEntries().map(f=>`<div class="list-item"><strong>${f.vehicle}</strong><div class="row"><span>${f.date}</span><strong>${mx(f.total)}</strong></div><div class="small">${f.liters||0} L · ${f.price?mx(f.price)+'/L':''} · ${f.odometer?'Odómetro '+f.odometer:''}</div><button class="secondary danger mini" onclick="deleteFuel('${f.id}')">Eliminar carga</button></div>`).join('')||'Sin cargas.';const acc=Object.entries(state.accounts);$('accountsList').innerHTML=acc.map(([id,a])=>`<div class="list-item"><div class="row"><strong>${a.name}</strong><strong class="${a.currency==='USD'?'cyan':'green'}">${a.currency==='USD'?usd(a.balance):mx(a.balance)}</strong></div></div>`).join('');$('mAccount').innerHTML=acc.map(([id,a])=>`<option value="${id}">${a.name}</option>`).join('');$('subsList').innerHTML=state.subscriptions.map(s=>`<div class="list-item"><div class="row"><div><strong>${s.name}</strong><div class="small">${s.date||'Sin fecha'} · ${s.method||'Sin método'}</div></div><strong>${s.currency==='USD'?usd(s.amount):mx(s.amount)}</strong></div><button class="secondary" onclick="cancelSub('${s.id}')">${s.cancelled?'Reactivar':'Cancelar'}</button></div>`).join('')||'Sin suscripciones.';$('creditsList').innerHTML=state.credits.map(c=>`<div class="list-item"><div class="row"><div><strong>${c.name}</strong><div class="small">${c.status==='paid'?'Liquidado':'Próximo '+(c.date||'sin fecha')}</div></div><strong>${mx(c.balance)}</strong></div>${c.status!=='paid'?`<button class="secondary" onclick="payCredit('${c.id}')">Registrar abono</button>`:''}</div>`).join('')||'Sin créditos.';$('history').innerHTML=state.movements.map(m=>`<div class="list-item"><div class="row"><div><strong>${state.accounts[m.account]?.name||m.account}</strong><div class="small">${new Date(m.date).toLocaleString('es-MX')} · ${m.note||''}</div></div><strong class="${m.type==='deposit'?'green':'red'}">${m.type==='deposit'?'+':'-'}${m.currency==='USD'?usd(m.amount):mx(m.amount)}</strong></div></div>`).join('')||'Sin movimientos.';$('recent').innerHTML=state.movements.slice(0,5).map(m=>`<div class="row"><span>${m.note||state.accounts[m.account]?.name}</span><strong class="${m.type==='deposit'?'green':'red'}">${m.type==='deposit'?'+':'-'}${m.currency==='USD'?usd(m.amount):mx(m.amount)}</strong></div>`).join('')||'Sin movimientos.';$('homePeriodStatus').textContent=state.openPeriod?'En proceso':'Sin iniciar';
-$('homeFuelSpent').textContent=mx(fuelSpent());
-$('homeContinuePeriod').style.display=state.openPeriod?'block':'none';
-$('homeClosePeriod').style.display=state.openPeriod?'block':'none';
-renderPeriodHistory();
-$('cfgName').value=state.profile.name;$('cfgUsd').value=state.settings.initialUsd;$('cfgSaving').value=state.settings.savingUsd;$('cfgUsGroceries').value=state.settings.usGroceriesUsd;$('cfgMxGroceries').value=state.settings.mxGroceries;$('cfgMedical').value=state.settings.medicalUsd;$('cfgGrandma').value=state.settings.grandma;$('cfgClarissa').value=state.settings.clarissa;$('cfgFuel').value=state.settings.fuelBudget;$('cfgFreq').value=String(state.settings.frequencyDays);$('cfgNext').value=state.settings.nextPay;if(state.openPeriod){const p=state.openPeriod;$('pDate').value=p.date;$('pPay').value=p.pay;$('pSaving').value=p.saving;$('pExtraUsd').value=p.extraUsd;$('pExtraMxn').value=p.extraMxn;$('pUsTicket').value=p.usTicket;$('pChanged').value=p.changed;$('pRate').value=p.rate;$('pMxTicket').value=p.mxTicket}else{$('pSaving').value=state.settings.savingUsd;$('pRate').value=rate()}preview()}
-
-$('openActivity').onclick=()=>go('activity');
-$('homeContinuePeriod').onclick=()=>go('payday');
-$('homeClosePeriod').onclick=()=>$('closePeriod').click();
+$('editFuelTotal').oninput=()=>$('editFuelLiters').dispatchEvent(new Event('input'));
+$('saveFuelEdit').onclick=()=>{
+  const f=state.fuelLogs.find(x=>x.id===$('editFuelId').value);
+  if(!f)return;
+  const total=+$('editFuelTotal').value;
+  if(!total)return alert('Ingresa el total');
+  Object.assign(f,{
+    vehicle:$('editFuelVehicle').value,
+    date:$('editFuelDate').value,
+    total,
+    liters:+$('editFuelLiters').value||0,
+    price:+$('editFuelPrice').value||0,
+    odometer:+$('editFuelOdo').value||0
+  });
+  $('editFuelCard').classList.add('hidden');
+  save();
+};
+$('cancelFuelEdit').onclick=()=>$('editFuelCard').classList.add('hidden');
 
 if('serviceWorker' in navigator)navigator.serviceWorker.register('service-worker.js');render();
 </script>
