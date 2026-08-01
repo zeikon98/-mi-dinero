@@ -1,8 +1,9 @@
-# Zeikon Wealth v1.1
+# Zeikon Wealth v1.2
 
 Mejoras:
-- Modo Pago guiado en 6 pasos
-- Resumen financiero en tiempo real
-- Quincena abierta para registrar varias cargas de gasolina
-- Cierre de quincena con sobrante o excedente de gasolina
-- Actualización automática de fondo USD, sobres y efectivo
+- Patrimonio completamente dinámico
+- Cierre de quincena conectado con ahorro, sobres, gasolina y efectivo
+- Apartado quincenal de suscripciones
+- Historial de movimientos
+- Primera gráfica de patrimonio por quincena
+- Snapshots automáticos al cerrar cada quincena
