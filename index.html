@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0B1220">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Zeikon Wealth</title>
+<style>
+:root{
+  --bg:#0B1220;--panel:#111827;--panel2:#172033;--blue:#2563EB;--green:#22C55E;
+  --cyan:#22D3EE;--purple:#A855F7;--yellow:#FBBF24;--text:#F8FAFC;--muted:#94A3B8;--danger:#EF4444
+}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+header{position:sticky;top:0;background:rgba(11,18,32,.96);backdrop-filter:blur(10px);padding:18px 16px 10px;z-index:4}
+h1{margin:0;font-size:28px} .sub{color:var(--muted);font-size:13px}
+nav{display:flex;gap:8px;overflow:auto;padding:8px 16px 14px;background:var(--bg);position:sticky;top:62px;z-index:3}
+nav button{border:0;border-radius:999px;padding:10px 14px;background:var(--panel2);color:var(--text);white-space:nowrap}
+nav button.active{background:var(--blue)}
+main{padding:0 16px 100px;max-width:760px;margin:auto}
+.screen{display:none}.screen.active{display:block}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.card{background:var(--panel);border:1px solid #263249;border-radius:18px;padding:16px;margin:12px 0}
+.kpi{min-height:115px}.label{color:var(--muted);font-size:13px}.value{font-weight:800;font-size:25px;margin-top:8px}
+.green{color:var(--green)} .cyan{color:var(--cyan)} .purple{color:var(--purple)} .yellow{color:var(--yellow)}
+label{display:block;color:var(--muted);font-size:13px;margin:12px 0 6px}
+input,select{width:100%;padding:14px;border-radius:12px;border:1px solid #334155;background:#0F172A;color:var(--text);font-size:17px}
+button.primary{width:100%;border:0;border-radius:14px;padding:15px;background:var(--blue);color:white;font-size:17px;font-weight:700;margin-top:16px}
+button.secondary{width:100%;border:1px solid #334155;border-radius:14px;padding:13px;background:var(--panel2);color:white;font-size:15px;margin-top:10px}
+button.danger{background:transparent;border:1px solid var(--danger);color:#FCA5A5}
+.row{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid #223047}.row:last-child{border-bottom:0}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:10px 8px;text-align:left;border-bottom:1px solid #273449}th{color:var(--muted)}
+.notice{padding:12px;border-radius:12px;background:#172554;color:#BFDBFE;margin:12px 0;font-size:14px}
+.small{font-size:12px;color:var(--muted)}
+@media(max-width:480px){.grid{grid-template-columns:1fr 1fr}.value{font-size:22px}}
+
+.progress{height:12px;background:#263249;border-radius:999px;overflow:hidden;margin-top:10px}
+.progress>span{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--cyan));border-radius:999px}
+.badge{display:inline-block;padding:5px 9px;border-radius:999px;font-size:12px;font-weight:700}
+.badge.ok{background:#14532D;color:#BBF7D0}.badge.soon{background:#713F12;color:#FDE68A}.badge.late{background:#7F1D1D;color:#FECACA}
+.chart{display:flex;align-items:flex-end;gap:8px;height:180px;padding-top:15px}
+.bar{flex:1;min-width:18px;background:linear-gradient(180deg,var(--cyan),var(--blue));border-radius:8px 8px 3px 3px;position:relative}
+.bar span{position:absolute;bottom:-24px;left:50%;transform:translateX(-50%);font-size:10px;color:var(--muted)}
+.photo-preview{width:100%;max-height:240px;object-fit:contain;border-radius:12px;margin-top:10px;display:none}
+
+</style>
+</head>
+<body>
+<header>
+  <h1>Zeikon Wealth</h1>
+  <div class="sub">Constancia · Esfuerzo · Lealtad</div>
+</header>
+<nav>
+  <button data-screen="inicio" class="active">Home</button>
+  <button data-screen="quincena">Payday</button>
+  <button data-screen="mandado">Groceries</button>
+  <button data-screen="historial">Activity</button>
+  <button data-screen="suscripciones">Suscripciones</button>
+  <button data-screen="metas">Metas</button>
+  <button data-screen="asistente">Assistant</button>
+  <button data-screen="ajustes">More</button>
+</nav>
+
+<main>
+<section id="inicio" class="screen active">
+  <div class="card" style="background:linear-gradient(135deg,#111827,#172033);border-color:#334155">
+    <div class="small">Buenos días, Óscar</div>
+    <h2 style="margin:6px 0 0">Tu constancia está construyendo patrimonio.</h2>
+  </div>
+  <div class="grid">
+    <div class="card kpi"><div class="label">Fondo ahorro</div><div class="value cyan" id="kpiFondo">$1,000 USD</div></div>
+    <div class="card kpi"><div class="label">Sobre mandado</div><div class="value green" id="kpiSobre">$0 MXN</div></div>
+    <div class="card kpi"><div class="label">Patrimonio total</div><div class="value purple" id="kpiPatrimonio">$17,000 MXN</div></div>
+    <div class="card kpi"><div class="label">Disponible última quincena</div><div class="value yellow" id="kpiLibre">Sin registro</div></div>
+  </div>
+  <div class="card">
+    <div class="row"><span>Próximo pago</span><strong id="proximoPago">2 ago 2026</strong></div>
+    <div class="row"><span>Ahorro por quincena</span><strong id="ahorroQuincena">$500 USD</strong></div>
+    <div class="row"><span>Plataformas mensuales</span><strong id="plataformasMes">$1,780 MXN aprox.</strong></div>
+  </div>
+  <div class="notice">Tus datos se guardan en Safari en este iPhone. Exporta un respaldo de vez en cuando.</div>
+</section>
+
+<section id="quincena" class="screen">
+  <div class="card">
+    <h2>Registrar quincena</h2>
+    <label>Fecha de pago</label><input type="date" id="qFecha">
+    <label>Pago recibido (USD)</label><input type="number" step="0.01" id="qPago" value="1260">
+    <label>Tipo de cambio</label><input type="number" step="0.01" id="qCambio" value="17">
+    <button class="primary" id="guardarQuincena">Guardar quincena</button>
+  </div>
+  <div class="card" id="previewQuincena"></div>
+</section>
+
+<section id="mandado" class="screen">
+  <div class="card">
+    <h2>Registrar mandado</h2>
+    <label>Fecha</label><input type="date" id="mFecha">
+    <label>Ticket Estados Unidos (USD)</label><input type="number" step="0.01" id="mUsa">
+    <label>Ticket México (MXN)</label><input type="number" step="0.01" id="mMex">
+    <label>Tipo de cambio usado</label><input type="number" step="0.01" id="mCambio" value="17">
+<label>Foto opcional de los tickets</label><input type="file" accept="image/*" capture="environment" id="mFoto">
+<img id="fotoPreview" class="photo-preview" alt="Vista previa del ticket">
+    <button class="primary" id="guardarMandado">Guardar mandado</button>
+  </div>
+  <div class="card" id="previewMandado"></div>
+</section>
+
+<section id="historial" class="screen">
+  <div class="card"><h2>Quincenas</h2><div style="overflow:auto"><table id="tablaQuincenas"></table></div></div>
+  <div class="card"><h2>Mandado</h2><div style="overflow:auto"><table id="tablaMandado"></table></div></div>
+</section>
+
+<section id="ajustes" class="screen">
+  <div class="card">
+    <h2>Ajustes</h2>
+    <label>Fondo inicial USD</label><input type="number" id="aFondo">
+    <label>Ahorro por quincena USD</label><input type="number" id="aAhorro">
+    <label>Mandado EUA USD</label><input type="number" id="aMandadoUsa">
+    <label>Fondo médico USD</label><input type="number" id="aMedico">
+    <label>Abuela MXN</label><input type="number" id="aAbuela">
+    <label>Mandado México MXN</label><input type="number" id="aMandadoMex">
+    <label>Clarissa MXN</label><input type="number" id="aClarissa">
+    <label>Gasolina MXN</label><input type="number" id="aGasolina">
+    <button class="primary" id="guardarAjustes">Guardar ajustes</button>
+    <button class="secondary" id="exportar">Exportar respaldo</button>
+    <label>Importar respaldo</label><input type="file" id="importar" accept=".json">
+    <button class="secondary danger" id="borrarTodo">Borrar todos los datos</button>
+  </div>
+</section>
+
+<section id="suscripciones" class="screen">
+  <div class="card">
+    <h2>Suscripciones</h2>
+    <div id="listaSuscripciones"></div>
+  </div>
+</section>
+
+<section id="metas" class="screen">
+  <div class="card">
+    <h2>Metas de ahorro</h2>
+    <label>Nombre de la meta</label><input id="metaNombre" placeholder="Ej. Fondo de emergencia">
+    <label>Meta en MXN</label><input type="number" id="metaMonto" placeholder="20000">
+    <button class="primary" id="agregarMeta">Agregar meta</button>
+  </div>
+  <div id="listaMetas"></div>
+  <div class="card">
+    <h2>Crecimiento del patrimonio</h2>
+    <div class="chart" id="graficaPatrimonio"></div>
+  </div>
+</section>
+
+
+<section id="asistente" class="screen">
+  <div class="card">
+    <div class="small">Zeikon Assistant</div>
+    <h2 id="wizardTitle">Vamos a registrar tu quincena</h2>
+    <div class="progress"><span id="wizardProgress" style="width:20%"></span></div>
+    <div id="wizardBody" style="margin-top:18px"></div>
+    <button class="primary" id="wizardNext">Continuar</button>
+    <button class="secondary" id="wizardBack">Atrás</button>
+  </div>
+</section>
+
+</main>
+
+<script>
+const DEFAULTS={
+  fondoInicial:1000, ahorroQuincenal:500, mandadoUsa:30, medico:30,
+  abuela:2600, mandadoMex:2500, clarissa:1000, gasolina:800,
+  netflix:369, crunchy:159, geforce:439, youtube:159, albionUsd:15, chatgpt:399,
+  subscriptionDays:{Netflix:5,Crunchyroll:8,'GeForce NOW':12,'YouTube Premium':15,'Albion Online':20,ChatGPT:22}
+};
+let state=JSON.parse(localStorage.getItem('miDineroState')||'null')||{settings:{...DEFAULTS},quincenas:[],mandados:[],metas:[]};
+if(!state.metas) state.metas=[]; if(!state.settings.subscriptionDays) state.settings.subscriptionDays={...DEFAULTS.subscriptionDays};
+const $=id=>document.getElementById(id);
+const mx=n=>'$'+Number(n||0).toLocaleString('es-MX',{maximumFractionDigits:2})+' MXN';
+const usd=n=>'$'+Number(n||0).toLocaleString('en-US',{maximumFractionDigits:2})+' USD';
+function save(){localStorage.setItem('miDineroState',JSON.stringify(state));render();}
+function plataformasQuincena(cambio){
+  const s=state.settings;
+  return (s.netflix+s.crunchy+s.geforce+s.youtube+s.chatgpt)/2 + (s.albionUsd*cambio)/2;
+}
+function resumenQuincena(pago,cambio){
+  const s=state.settings, gastosUsa=s.mandadoUsa+s.medico, usdCambiar=pago-s.ahorroQuincenal-gastosUsa;
+  const mxnRecibidos=usdCambiar*cambio, gastosFijos=s.abuela+s.mandadoMex+s.clarissa+s.gasolina;
+  const plataformas=plataformasQuincena(cambio), libre=mxnRecibidos-gastosFijos-plataformas;
+  return {gastosUsa,usdCambiar,mxnRecibidos,gastosFijos,plataformas,libre};
+}
+function fondoActual(){return state.settings.fondoInicial+state.quincenas.length*state.settings.ahorroQuincenal}
+function sobreActual(){return state.mandados.reduce((a,m)=>a+m.totalSobre,0)}
+function latestCambio(){return state.quincenas.at(-1)?.cambio||17}
+
+function diasParaCobro(day){
+  const now=new Date(), due=new Date(now.getFullYear(),now.getMonth(),day);
+  if(due<new Date(now.getFullYear(),now.getMonth(),now.getDate())) due.setMonth(due.getMonth()+1);
+  return Math.ceil((due-now)/86400000);
+}
+function renderSuscripciones(){
+  const s=state.settings;
+  const items=[
+    ['Netflix',s.netflix,'MXN'],['Crunchyroll',s.crunchy,'MXN'],['GeForce NOW',s.geforce,'MXN'],
+    ['YouTube Premium',s.youtube,'MXN'],['Albion Online',s.albionUsd,'USD'],['ChatGPT',s.chatgpt,'MXN']
+  ];
+  $('listaSuscripciones').innerHTML=items.map(([n,m,mon])=>{
+    const d=diasParaCobro(s.subscriptionDays[n]||1), cls=d<=3?'late':d<=7?'soon':'ok';
+    return `<div class="row"><div><strong>${n}</strong><div class="small">Cobro el día ${s.subscriptionDays[n]||1}</div></div>
+    <div style="text-align:right"><strong>${mon==='USD'?usd(m):mx(m)}</strong><br><span class="badge ${cls}">${d} días</span></div></div>`;
+  }).join('');
+}
+function renderMetas(){
+  const patrimonio=fondoActual()*latestCambio()+sobreActual();
+  $('listaMetas').innerHTML=state.metas.map((m,i)=>{
+    const p=Math.min(100,patrimonio/m.monto*100);
+    return `<div class="card"><div class="row"><strong>${m.nombre}</strong><button onclick="eliminarMeta(${i})" style="background:none;border:0;color:#FCA5A5">Eliminar</button></div>
+    <div class="value">${mx(m.monto)}</div><div class="small">${p.toFixed(1)}% alcanzado con tu patrimonio actual</div>
+    <div class="progress"><span style="width:${p}%"></span></div></div>`;
+  }).join('') || '<div class="card small">Todavía no tienes metas.</div>';
+  const values=state.quincenas.slice(-8).map(q=>q.fondo*q.cambio+(q.sobre||0));
+  const max=Math.max(...values,1);
+  $('graficaPatrimonio').innerHTML=values.map((v,i)=>`<div class="bar" style="height:${Math.max(8,v/max*150)}px"><span>${i+1}</span></div>`).join('') ||
+  '<div class="small">Registra quincenas para ver la gráfica.</div>';
+}
+window.eliminarMeta=i=>{state.metas.splice(i,1);save()};
+
+function render(){
+  $('kpiFondo').textContent=usd(fondoActual());
+  $('kpiSobre').textContent=mx(sobreActual());
+  $('kpiPatrimonio').textContent=mx(fondoActual()*latestCambio()+sobreActual());
+  $('kpiLibre').textContent=state.quincenas.length?mx(state.quincenas.at(-1).libre):'Sin registro';
+  $('ahorroQuincena').textContent=usd(state.settings.ahorroQuincenal);
+  const pm=(state.settings.netflix+state.settings.crunchy+state.settings.geforce+state.settings.youtube+state.settings.chatgpt+state.settings.albionUsd*latestCambio());
+  $('plataformasMes').textContent=mx(pm);
+  const next=new Date('2026-08-02T12:00:00');
+  next.setDate(next.getDate()+14*state.quincenas.length);
+  $('proximoPago').textContent=next.toLocaleDateString('es-MX',{day:'numeric',month:'short',year:'numeric'});
+  $('qFecha').value=next.toISOString().slice(0,10); $('mFecha').value=next.toISOString().slice(0,10);
+  $('mCambio').value=latestCambio(); $('qCambio').value=latestCambio();
+  const s=state.settings;
+  ['Fondo','Ahorro','MandadoUsa','Medico','Abuela','MandadoMex','Clarissa','Gasolina'].forEach(()=>{});
+  $('aFondo').value=s.fondoInicial;$('aAhorro').value=s.ahorroQuincenal;$('aMandadoUsa').value=s.mandadoUsa;$('aMedico').value=s.medico;
+  $('aAbuela').value=s.abuela;$('aMandadoMex').value=s.mandadoMex;$('aClarissa').value=s.clarissa;$('aGasolina').value=s.gasolina;
+  $('tablaQuincenas').innerHTML='<tr><th>Fecha</th><th>Pago</th><th>Cambio</th><th>Libre</th><th>Fondo</th></tr>'+
+    state.quincenas.map(q=>`<tr><td>${q.fecha}</td><td>${usd(q.pago)}</td><td>${q.cambio}</td><td>${mx(q.libre)}</td><td>${usd(q.fondo)}</td></tr>`).join('');
+  $('tablaMandado').innerHTML='<tr><th>Fecha</th><th>Ticket EUA</th><th>Ticket MX</th><th>Al sobre</th></tr>'+
+    state.mandados.map(m=>`<tr><td>${m.fecha}</td><td>${usd(m.ticketUsa)}</td><td>${mx(m.ticketMex)}</td><td>${mx(m.totalSobre)}${m.foto?'<br><span class="badge ok">Foto</span>':''}</td></tr>`).join('');
+  previewQ();previewM();renderSuscripciones();renderMetas();
+}
+function previewQ(){
+  const r=resumenQuincena(+$('qPago').value||0,+$('qCambio').value||0);
+  $('previewQuincena').innerHTML=`<h3>Vista previa</h3>
+  <div class="row"><span>Dólares a cambiar</span><strong>${usd(r.usdCambiar)}</strong></div>
+  <div class="row"><span>Pesos recibidos</span><strong>${mx(r.mxnRecibidos)}</strong></div>
+  <div class="row"><span>Gastos fijos</span><strong>${mx(r.gastosFijos)}</strong></div>
+  <div class="row"><span>Plataformas</span><strong>${mx(r.plataformas)}</strong></div>
+  <div class="row"><span>Dinero libre</span><strong class="${r.libre<0?'':'green'}">${mx(r.libre)}</strong></div>
+  <div class="row"><span>Fondo después de guardar</span><strong>${usd(fondoActual()+state.settings.ahorroQuincenal)}</strong></div>`;
+}
+function previewM(){
+  const s=state.settings, usa=+$('mUsa').value||0, mex=+$('mMex').value||0, cambio=+$('mCambio').value||0;
+  const sobraUsa=Math.max(s.mandadoUsa-usa,0), sobraMex=Math.max(s.mandadoMex-mex,0), total=sobraUsa*cambio+sobraMex;
+  $('previewMandado').innerHTML=`<h3>Vista previa</h3>
+  <div class="row"><span>Sobra EUA</span><strong>${usd(sobraUsa)}</strong></div>
+  <div class="row"><span>Sobra México</span><strong>${mx(sobraMex)}</strong></div>
+  <div class="row"><span>Guardar en el sobre</span><strong class="green">${mx(total)}</strong></div>`;
+}
+
+let pendingPhoto='';
+$('mFoto').onchange=e=>{
+  const f=e.target.files[0]; if(!f)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{pendingPhoto=ev.target.result;$('fotoPreview').src=pendingPhoto;$('fotoPreview').style.display='block'};
+  reader.readAsDataURL(f);
+};
+
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
+  
+let pendingPhoto='';
+$('mFoto').onchange=e=>{
+  const f=e.target.files[0]; if(!f)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{pendingPhoto=ev.target.result;$('fotoPreview').src=pendingPhoto;$('fotoPreview').style.display='block'};
+  reader.readAsDataURL(f);
+};
+
+document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');$(b.dataset.screen).classList.add('active');
+});
+['qPago','qCambio'].forEach(id=>$(id).addEventListener('input',previewQ));
+['mUsa','mMex','mCambio'].forEach(id=>$(id).addEventListener('input',previewM));
+$('guardarQuincena').onclick=()=>{
+  const pago=+$('qPago').value,cambio=+$('qCambio').value;if(!pago||!cambio)return alert('Ingresa pago y tipo de cambio');
+  const r=resumenQuincena(pago,cambio);
+  state.quincenas.push({fecha:$('qFecha').value,pago,cambio,...r,fondo:fondoActual()+state.settings.ahorroQuincenal,sobre:sobreActual()});
+  save();alert('Quincena guardada');
+};
+$('guardarMandado').onclick=()=>{
+  const ticketUsa=+$('mUsa').value||0,ticketMex=+$('mMex').value||0,cambio=+$('mCambio').value||0;
+  const sobraUsa=Math.max(state.settings.mandadoUsa-ticketUsa,0),sobraMex=Math.max(state.settings.mandadoMex-ticketMex,0);
+  const totalSobre=sobraUsa*cambio+sobraMex;
+  state.mandados.push({fecha:$('mFecha').value,ticketUsa,ticketMex,cambio,sobraUsa,sobraMex,totalSobre,foto:pendingPhoto});
+  pendingPhoto='';$('fotoPreview').style.display='none';$('mFoto').value='';
+  $('mUsa').value='';$('mMex').value='';save();alert('Mandado guardado');
+};
+$('guardarAjustes').onclick=()=>{
+  Object.assign(state.settings,{fondoInicial:+$('aFondo').value,ahorroQuincenal:+$('aAhorro').value,mandadoUsa:+$('aMandadoUsa').value,
+  medico:+$('aMedico').value,abuela:+$('aAbuela').value,mandadoMex:+$('aMandadoMex').value,clarissa:+$('aClarissa').value,gasolina:+$('aGasolina').value});
+  save();alert('Ajustes guardados');
+};
+
+$('agregarMeta').onclick=()=>{
+  const nombre=$('metaNombre').value.trim(),monto=+$('metaMonto').value;
+  if(!nombre||!monto)return alert('Escribe nombre y monto de la meta');
+  state.metas.push({nombre,monto});$('metaNombre').value='';$('metaMonto').value='';save();
+};
+
+$('exportar').onclick=()=>{
+  const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);a.download='respaldo-mi-dinero.json';a.click();
+};
+$('importar').onchange=async e=>{const f=e.target.files[0];if(!f)return;state=JSON.parse(await f.text());save();alert('Respaldo importado')};
+$('borrarTodo').onclick=()=>{if(confirm('¿Borrar todos los datos?')){state={settings:{...DEFAULTS},quincenas:[],mandados:[],metas:[]};save()}};
+
+let wizardStep=0,wizardData={};
+const wizardSteps=[
+  {title:'Paso 1 de 5',html:`<label>¿Cuánto te pagaron?</label><input id="wPago" type="number" step="0.01" value="1260">`},
+  {title:'Paso 2 de 5',html:`<label>¿Ya apartaste tu ahorro?</label><div class="notice">$500 USD se enviarán a tu fondo.</div><select id="wAhorro"><option value="si">Sí</option><option value="no">Todavía no</option></select>`},
+  {title:'Paso 3 de 5',html:`<label>Ticket de compras en EUA</label><input id="wUsa" type="number" step="0.01" placeholder="Ej. 18.45">`},
+  {title:'Paso 4 de 5',html:`<label>Tipo de cambio</label><input id="wCambio" type="number" step="0.01" value="17"><label>Ticket de mandado en México</label><input id="wMex" type="number" step="0.01" placeholder="Ej. 2180">`},
+  {title:'Paso 5 de 5',html:`<div class="notice">Puedes guardar la quincena ahora y completar gasolina después. Quedará En proceso.</div>`}
+];
+function drawWizard(){
+  const s=wizardSteps[wizardStep];
+  $('wizardTitle').textContent=s.title;
+  $('wizardBody').innerHTML=s.html;
+  $('wizardProgress').style.width=((wizardStep+1)/wizardSteps.length*100)+'%';
+  $('wizardBack').style.display=wizardStep===0?'none':'block';
+  $('wizardNext').textContent=wizardStep===wizardSteps.length-1?'Guardar quincena':'Continuar';
+}
+$('wizardNext').onclick=()=>{
+  if(wizardStep===0) wizardData.pago=+$('wPago').value||0;
+  if(wizardStep===1) wizardData.ahorro=$('wAhorro').value;
+  if(wizardStep===2) wizardData.usa=+$('wUsa').value||0;
+  if(wizardStep===3){wizardData.cambio=+$('wCambio').value||0;wizardData.mex=+$('wMex').value||0;}
+  if(wizardStep<wizardSteps.length-1){wizardStep++;drawWizard();return}
+  if(!wizardData.pago||!wizardData.cambio)return alert('Falta el pago o tipo de cambio');
+  const r=resumenQuincena(wizardData.pago,wizardData.cambio);
+  state.quincenas.push({fecha:new Date().toISOString().slice(0,10),pago:wizardData.pago,cambio:wizardData.cambio,...r,
+    fondo:fondoActual()+state.settings.ahorroQuincenal,sobre:sobreActual(),estado:'En proceso'});
+  if(wizardData.usa||wizardData.mex){
+    const su=Math.max(state.settings.mandadoUsa-wizardData.usa,0);
+    const sm=Math.max(state.settings.mandadoMex-wizardData.mex,0);
+    state.mandados.push({fecha:new Date().toISOString().slice(0,10),ticketUsa:wizardData.usa,ticketMex:wizardData.mex,cambio:wizardData.cambio,
+      sobraUsa:su,sobraMex:sm,totalSobre:su*wizardData.cambio+sm});
+  }
+  wizardStep=0;wizardData={};save();drawWizard();alert('Quincena guardada como En proceso');
+};
+$('wizardBack').onclick=()=>{if(wizardStep>0){wizardStep--;drawWizard()}};
+drawWizard();
+
+if('serviceWorker' in navigator) navigator.serviceWorker.register('service-worker.js');
+render();
+</script>
+</body>
+</html>
