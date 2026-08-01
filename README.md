@@ -1,3 +1,8 @@
-# Zeikon Wealth v1.0 Beta
+# Zeikon Wealth v1.1
 
-Versión funcional inicial para uso personal.
+Mejoras:
+- Modo Pago guiado en 6 pasos
+- Resumen financiero en tiempo real
+- Quincena abierta para registrar varias cargas de gasolina
+- Cierre de quincena con sobrante o excedente de gasolina
+- Actualización automática de fondo USD, sobres y efectivo
