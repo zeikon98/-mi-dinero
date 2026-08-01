@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#080d19">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
-<title>Zeikon Wealth v1.2</title>
+<title>Zeikon Wealth v1.2.1</title>
 <style>
 :root{--bg:#080d19;--panel:#111827;--panel2:#172033;--line:#2b3950;--text:#f8fafc;--muted:#9aa8be;--gold:#d6b65e;--blue:#4f7cff;--green:#39d27d;--cyan:#42cce8;--purple:#a970ff;--yellow:#f6c64f;--red:#ff6b75}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -34,9 +34,10 @@ button{border:0;cursor:pointer}.primary{width:100%;padding:16px;border-radius:15
 </style>
 </head>
 <body>
-<header><div class="brand"><div class="shield">Z</div><div><h1>Zeikon Wealth</h1><div class="tagline">Consistency Creates Wealth · v1.2</div></div></div></header>
+<header><div class="brand"><div class="shield">Z</div><div><h1>Zeikon Wealth</h1><div class="tagline">Consistency Creates Wealth · v1.2.1</div></div></div></header>
 <main>
 <section id="home" class="screen active">
+<div class="notice">Actualización 1.2.1: navegación corregida. Fuel, Pago, Vault y More ya responden.</div>
 <div id="payMode" class="card hidden"><div class="eyebrow">Modo Pago</div><h2>Hoy construimos patrimonio.</h2><div class="sub">Tienes un pago programado o una quincena abierta.</div><button class="primary" onclick="go('payday')">Continuar</button></div>
 <div class="card hero"><div class="sub" id="hello">Buenos días, Óscar</div><div class="eyebrow" style="margin-top:14px">Patrimonio total</div><div class="hero-value" id="netWorth">$17,000 MXN</div><div class="sub"><span id="available">$0</span> disponible · <span id="reserved">$17,000</span> reservado</div></div>
 <div class="grid">
@@ -46,32 +47,25 @@ button{border:0;cursor:pointer}.primary{width:100%;padding:16px;border-radius:15
 <div class="card kpi"><div class="label">Estado</div><div class="value purple" id="periodState">Sin iniciar</div></div>
 </div>
 <div class="card"><div class="row"><span>Próximo pago</span><strong id="nextPay">2 ago 2026</strong></div><div class="row"><span>Ahorro base</span><strong id="savingBase">$500 USD</strong></div><div class="row"><span>Gasolina</span><strong id="fuelBase">$800 MXN</strong></div></div>
-
-<div class="card">
-  <div class="eyebrow">Crecimiento</div>
-  <h3>Patrimonio por quincena</h3>
-  <canvas id="wealthChart" width="680" height="230" style="width:100%;height:220px;border-radius:14px;background:#0b1322"></canvas>
-  <div class="small">Cada punto representa una quincena cerrada.</div>
-</div>
 <div class="card"><div class="eyebrow">Actividad reciente</div><div id="recent" class="small" style="margin-top:12px">Sin movimientos.</div></div>
 </section>
 
-
 <section id="payday" class="screen">
-<div class="card">
-  <div class="eyebrow">Modo Pago</div>
-  <h2 id="payStepTitle">Paso 1 de 6 · Ingreso</h2>
-  <div style="display:flex;gap:7px;margin:12px 0 18px" id="payProgress"></div>
-  <div id="payWizard"></div>
-  <button class="primary" id="payNext">Continuar</button>
-  <button class="secondary" id="payBack">Atrás</button>
+<div class="card"><div class="eyebrow">Modo Pago</div><h2>Registrar quincena</h2>
+<label>Fecha</label><input type="date" id="pDate">
+<label>Pago recibido (USD)</label><input type="number" step="0.01" id="pPay" value="1260">
+<label>Ahorro de esta quincena (USD)</label><input type="number" step="0.01" id="pSaving" value="500">
+<label>Ingreso extra USD</label><input type="number" step="0.01" id="pExtraUsd" value="0">
+<label>Ingreso extra MXN</label><input type="number" step="0.01" id="pExtraMxn" value="0">
+<label>Ticket mandado EUA (USD)</label><input type="number" step="0.01" id="pUsTicket" value="0">
+<label>Dólares cambiados</label><input type="number" step="0.01" id="pChanged">
+<label>Tipo de cambio</label><input type="number" step="0.01" id="pRate" value="17">
+<label>Ticket mandado México (MXN)</label><input type="number" step="0.01" id="pMxTicket" value="0">
+<button class="primary" id="savePeriod">Guardar quincena abierta</button>
+<button class="secondary" id="closePeriod">Cerrar quincena</button>
 </div>
-<div class="card">
-  <h3>Resumen en tiempo real</h3>
-  <div id="periodPreview" class="small"></div>
-</div>
+<div class="card"><h3>Resumen</h3><div id="periodPreview" class="small"></div></div>
 </section>
-
 
 <section id="fuel" class="screen">
 <div class="card"><div class="eyebrow">Fuel</div><h2>Nueva carga</h2>
@@ -137,9 +131,9 @@ button{border:0;cursor:pointer}.primary{width:100%;padding:16px;border-radius:15
 const $=x=>document.getElementById(x), today=()=>new Date().toISOString().slice(0,10);
 const mx=n=>'$'+Number(n||0).toLocaleString('es-MX',{maximumFractionDigits:2})+' MXN';
 const usd=n=>'$'+Number(n||0).toLocaleString('en-US',{maximumFractionDigits:2})+' USD';
-const defaults={profile:{name:'Óscar'},settings:{initialUsd:1000,savingUsd:500,usGroceriesUsd:30,medicalUsd:30,mxGroceries:2500,grandma:2600,clarissa:1000,fuelBudget:800,frequencyDays:14,nextPay:'2026-08-02'},accounts:{usd:{name:'Fondo USD principal',currency:'USD',balance:1000},grocery:{name:'Sobre Mandado',currency:'MXN',balance:0},fuel:{name:'Sobre Gasolina',currency:'MXN',balance:0},leftover:{name:'Sobrante de quincena',currency:'MXN',balance:0},cash:{name:'Efectivo disponible',currency:'MXN',balance:0}},openPeriod:null,periods:[],fuelLogs:[],movements:[],snapshots:[],subscriptions:[{id:'netflix',name:'Netflix',amount:369,currency:'MXN',date:'2026-08-05',method:''},{id:'crunchy',name:'Crunchyroll',amount:159,currency:'MXN',date:'2026-08-08',method:''},{id:'geforce',name:'GeForce NOW',amount:439,currency:'MXN',date:'2026-08-12',method:''},{id:'youtube',name:'YouTube Premium',amount:159,currency:'MXN',date:'2026-08-15',method:''},{id:'albion',name:'Albion Online',amount:15,currency:'USD',date:'2026-08-20',method:''},{id:'chatgpt',name:'ChatGPT',amount:399,currency:'MXN',date:'2026-08-22',method:''}],credits:[]};
+const defaults={profile:{name:'Óscar'},settings:{initialUsd:1000,savingUsd:500,usGroceriesUsd:30,medicalUsd:30,mxGroceries:2500,grandma:2600,clarissa:1000,fuelBudget:800,frequencyDays:14,nextPay:'2026-08-02'},accounts:{usd:{name:'Fondo USD principal',currency:'USD',balance:1000},grocery:{name:'Sobre Mandado',currency:'MXN',balance:0},fuel:{name:'Sobre Gasolina',currency:'MXN',balance:0},leftover:{name:'Sobrante de quincena',currency:'MXN',balance:0},cash:{name:'Efectivo disponible',currency:'MXN',balance:0}},openPeriod:null,periods:[],fuelLogs:[],movements:[],subscriptions:[{id:'netflix',name:'Netflix',amount:369,currency:'MXN',date:'2026-08-05',method:''},{id:'crunchy',name:'Crunchyroll',amount:159,currency:'MXN',date:'2026-08-08',method:''},{id:'geforce',name:'GeForce NOW',amount:439,currency:'MXN',date:'2026-08-12',method:''},{id:'youtube',name:'YouTube Premium',amount:159,currency:'MXN',date:'2026-08-15',method:''},{id:'albion',name:'Albion Online',amount:15,currency:'USD',date:'2026-08-20',method:''},{id:'chatgpt',name:'ChatGPT',amount:399,currency:'MXN',date:'2026-08-22',method:''}],credits:[]};
 let state=JSON.parse(localStorage.getItem('zeikon-v1-beta')||'null')||structuredClone(defaults);
-function ensure(){state.profile=state.profile||defaults.profile;state.settings={...defaults.settings,...(state.settings||{})};state.accounts={...structuredClone(defaults.accounts),...(state.accounts||{})};['periods','fuelLogs','movements','snapshots','subscriptions','credits'].forEach(k=>state[k]=state[k]||[])}
+function ensure(){state.profile=state.profile||defaults.profile;state.settings={...defaults.settings,...(state.settings||{})};state.accounts={...structuredClone(defaults.accounts),...(state.accounts||{})};['periods','fuelLogs','movements','subscriptions','credits'].forEach(k=>state[k]=state[k]||[])}
 ensure();
 function save(){localStorage.setItem('zeikon-v1-beta',JSON.stringify(state));render()}
 function go(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));$(id).classList.add('active');document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.go===id));scrollTo(0,0);render()}
@@ -150,149 +144,12 @@ function accountTotalMxn(){return Object.values(state.accounts).reduce((s,a)=>s+
 function fuelSpent(){if(!state.openPeriod)return 0;return state.fuelLogs.filter(f=>f.periodId===state.openPeriod.id).reduce((s,f)=>s+f.total,0)}
 function log(type,account,amount,currency,note){state.movements.unshift({id:crypto.randomUUID(),date:new Date().toISOString(),type,account,amount,currency,note})}
 function calc(p){const usdIncome=p.pay+p.extraUsd;const changed=p.changed||Math.max(0,usdIncome-p.saving-state.settings.usGroceriesUsd-state.settings.medicalUsd);const mxReceived=changed*p.rate+p.extraMxn;const usSurplus=Math.max(0,state.settings.usGroceriesUsd-p.usTicket)*p.rate;const mxSurplus=Math.max(0,state.settings.mxGroceries-p.mxTicket);const grocerySurplus=usSurplus+mxSurplus;const fixed=state.settings.grandma+state.settings.clarissa+state.settings.mxGroceries+state.settings.fuelBudget;const cashBeforeFuel=mxReceived-fixed;return{changed,mxReceived,usSurplus,mxSurplus,grocerySurplus,cashBeforeFuel}}
-
-
-let payStep=0;
-let payDraft={date:today(),pay:1260,saving:state.settings.savingUsd,extraUsd:0,extraMxn:0,usTicket:0,changed:0,rate:rate(),mxTicket:0};
-
-const paySteps=[
-  {title:'Paso 1 de 6 · Ingreso',render:()=>`
-    <label>Fecha de pago</label><input type="date" id="wDate" value="${payDraft.date}">
-    <label>Pago recibido (USD)</label><input type="number" step="0.01" id="wPay" value="${payDraft.pay}">
-    <label>Ingreso extra USD</label><input type="number" step="0.01" id="wExtraUsd" value="${payDraft.extraUsd||0}">
-    <label>Ingreso extra MXN</label><input type="number" step="0.01" id="wExtraMxn" value="${payDraft.extraMxn||0}">
-  `},
-  {title:'Paso 2 de 6 · Ahorro',render:()=>`
-    <div class="notice">Tu ahorro base es ${usd(state.settings.savingUsd)}. Puedes aumentarlo esta quincena.</div>
-    <label>Ahorro de esta quincena (USD)</label><input type="number" step="0.01" id="wSaving" value="${payDraft.saving}">
-  `},
-  {title:'Paso 3 de 6 · Mandado EUA',render:()=>`
-    <div class="row"><span>Presupuesto</span><strong>${usd(state.settings.usGroceriesUsd)}</strong></div>
-    <label>Total del ticket (USD)</label><input type="number" step="0.01" id="wUsTicket" value="${payDraft.usTicket||0}">
-    <div class="small">Lo que no gastes se convierte a pesos y pasa al Sobre Mandado.</div>
-  `},
-  {title:'Paso 4 de 6 · Cambio',render:()=>{
-    const suggested=Math.max(0,(+payDraft.pay||0)+(+payDraft.extraUsd||0)-(+payDraft.saving||0)-state.settings.usGroceriesUsd-state.settings.medicalUsd);
-    if(!payDraft.changed) payDraft.changed=suggested;
-    return `
-      <div class="row"><span>Sugerencia a cambiar</span><strong>${usd(suggested)}</strong></div>
-      <label>Dólares cambiados realmente</label><input type="number" step="0.01" id="wChanged" value="${payDraft.changed}">
-      <label>Tipo de cambio</label><input type="number" step="0.01" id="wRate" value="${payDraft.rate}">
-    `;
-  }},
-  {title:'Paso 5 de 6 · Mandado México',render:()=>`
-    <div class="row"><span>Presupuesto</span><strong>${mx(state.settings.mxGroceries)}</strong></div>
-    <label>Total del ticket (MXN)</label><input type="number" step="0.01" id="wMxTicket" value="${payDraft.mxTicket||0}">
-  `},
-  {title:'Paso 6 de 6 · Confirmar',render:()=>{
-    const c=calc(payDraft);
-    return `
-      <div class="row"><span>Fondo USD</span><strong class="cyan">+${usd(payDraft.saving)}</strong></div>
-      <div class="row"><span>Pesos recibidos</span><strong>${mx(c.mxReceived)}</strong></div>
-      <div class="row"><span>Sobre Mandado</span><strong class="green">+${mx(c.grocerySurplus)}</strong></div>
-      <div class="row"><span>Efectivo antes de gasolina</span><strong class="${c.cashBeforeFuel>=0?'yellow':'red'}">${mx(c.cashBeforeFuel)}</strong></div>
-      <div class="notice">La quincena se guardará abierta. Registra todas tus cargas en Fuel y después vuelve aquí para cerrarla.</div>
-      ${state.openPeriod?'<button class="secondary" id="wizardClosePeriod">Cerrar quincena actual</button>':''}
-    `;
-  }}
-];
-
-function capturePayStep(){
-  if(payStep===0){
-    payDraft.date=$('wDate').value; payDraft.pay=+$('wPay').value||0;
-    payDraft.extraUsd=+$('wExtraUsd').value||0; payDraft.extraMxn=+$('wExtraMxn').value||0;
-  }
-  if(payStep===1) payDraft.saving=+$('wSaving').value||0;
-  if(payStep===2) payDraft.usTicket=+$('wUsTicket').value||0;
-  if(payStep===3){ payDraft.changed=+$('wChanged').value||0; payDraft.rate=+$('wRate').value||0; }
-  if(payStep===4) payDraft.mxTicket=+$('wMxTicket').value||0;
-}
-function drawPayWizard(){
-  $('payStepTitle').textContent=paySteps[payStep].title;
-  $('payWizard').innerHTML=paySteps[payStep].render();
-  $('payProgress').innerHTML=paySteps.map((_,i)=>`<span style="height:6px;flex:1;border-radius:99px;background:${i<=payStep?'#4f7cff':'#28344a'}"></span>`).join('');
-  $('payBack').style.display=payStep===0?'none':'block';
-  $('payNext').textContent=payStep===paySteps.length-1?'Guardar quincena abierta':'Continuar';
-  renderPayPreview();
-  const closeBtn=$('wizardClosePeriod');
-  if(closeBtn) closeBtn.onclick=closeOpenPeriod;
-}
-function renderPayPreview(){
-  const c=calc(payDraft);
-  $('periodPreview').innerHTML=`
-    <div class="row"><span>Ahorro</span><strong>${usd(payDraft.saving)}</strong></div>
-    <div class="row"><span>Pesos recibidos</span><strong>${mx(c.mxReceived)}</strong></div>
-    <div class="row"><span>Sobre Mandado</span><strong>${mx(c.grocerySurplus)}</strong></div>
-    <div class="row"><span>Apartado suscripciones</span><strong>${mx(subscriptionReserveMxn())}</strong></div><div class="row"><span>Disponible previo a gasolina</span><strong>${mx(c.cashBeforeFuel-subscriptionReserveMxn())}</strong></div>`;
-}
-$('payNext').onclick=()=>{
-  if(payStep<paySteps.length-1){
-    capturePayStep(); payStep++; drawPayWizard();drawWealthChart(); return;
-  }
-  const p={...payDraft,id:state.openPeriod?.id||crypto.randomUUID(),status:'open'};
-  Object.assign(p,calc(p));
-  state.openPeriod=p;
-  const i=state.periods.findIndex(x=>x.id===p.id);
-  if(i>=0) state.periods[i]=p; else state.periods.unshift(p);
-  save();
-  alert('Quincena guardada como En proceso');
-  go('home');
-};
-$('payBack').onclick=()=>{ if(payStep>0){ capturePayStep(); payStep--; drawPayWizard();drawWealthChart(); } };
-
-function closeOpenPeriod(){
-  const p=state.openPeriod;
-  if(!p) return alert('No hay quincena abierta');
-  Object.assign(p,calc(p));
-  const spent=fuelSpent();
-  const fuelDelta=state.settings.fuelBudget-spent;
-  const subscriptions=subscriptionReserveMxn();
-
-  if(fuelDelta>=0){
-    state.accounts.fuel.balance+=fuelDelta;
-    log('deposit','fuel',fuelDelta,'MXN','Sobrante gasolina');
-  }
-
-  state.accounts.grocery.balance+=p.grocerySurplus;
-  state.accounts.usd.balance+=p.saving;
-
-  let cashFinal=p.cashBeforeFuel-subscriptions;
-  if(fuelDelta<0) cashFinal+=fuelDelta;
-  state.accounts.cash.balance+=cashFinal;
-
-  log('deposit','usd',p.saving,'USD','Ahorro quincenal');
-  if(p.grocerySurplus) log('deposit','grocery',p.grocerySurplus,'MXN','Sobrante mandado');
-  if(subscriptions) log('withdraw','cash',subscriptions,'MXN','Apartado quincenal de suscripciones');
-  if(cashFinal) log(cashFinal>0?'deposit':'withdraw','cash',Math.abs(cashFinal),'MXN','Disponible al cierre');
-
-  p.status='closed';
-  p.fuelSpent=spent;
-  p.fuelDelta=fuelDelta;
-  p.subscriptionReserve=subscriptions;
-  p.cashFinal=cashFinal;
-  p.closedAt=new Date().toISOString();
-
-  state.openPeriod=null;
-  const d=new Date(state.settings.nextPay+'T12:00:00');
-  d.setDate(d.getDate()+state.settings.frequencyDays);
-  state.settings.nextPay=d.toISOString().slice(0,10);
-
-  const currentNet=accountTotalMxn();
-  state.snapshots.unshift({
-    id:crypto.randomUUID(),
-    date:p.date,
-    netWorth:currentNet,
-    usdBalance:state.accounts.usd.balance,
-    cash:state.accounts.cash.balance,
-    envelopes:state.accounts.grocery.balance+state.accounts.fuel.balance+state.accounts.leftover.balance
-  });
-
-  payDraft={date:today(),pay:1260,saving:state.settings.savingUsd,extraUsd:0,extraMxn:0,usTicket:0,changed:0,rate:rate(),mxTicket:0};
-  payStep=0;
-  save(); drawPayWizard();drawWealthChart(); alert('Quincena cerrada y patrimonio actualizado');
-}
-
-$('fDate').value=today();
+function periodFromInputs(){return{id:state.openPeriod?.id||crypto.randomUUID(),date:$('pDate').value,pay:+$('pPay').value||0,saving:+$('pSaving').value||0,extraUsd:+$('pExtraUsd').value||0,extraMxn:+$('pExtraMxn').value||0,usTicket:+$('pUsTicket').value||0,changed:+$('pChanged').value||0,rate:+$('pRate').value||0,mxTicket:+$('pMxTicket').value||0,status:'open'}}
+function preview(){const p=periodFromInputs(),c=calc(p);$('periodPreview').innerHTML=`<div class="row"><span>Pesos recibidos</span><strong>${mx(c.mxReceived)}</strong></div><div class="row"><span>Sobre Mandado</span><strong>${mx(c.grocerySurplus)}</strong></div><div class="row"><span>Efectivo antes de gasolina</span><strong>${mx(c.cashBeforeFuel)}</strong></div>`}
+['pPay','pSaving','pExtraUsd','pExtraMxn','pUsTicket','pChanged','pRate','pMxTicket'].forEach(id=>$(id).oninput=preview);
+$('savePeriod').onclick=()=>{const p=periodFromInputs();Object.assign(p,calc(p));state.openPeriod=p;const i=state.periods.findIndex(x=>x.id===p.id);if(i>=0)state.periods[i]=p;else state.periods.unshift(p);save();alert('Quincena guardada como abierta')}
+$('closePeriod').onclick=()=>{const p=state.openPeriod;if(!p)return alert('No hay quincena abierta');Object.assign(p,calc(p));const spent=fuelSpent(),delta=state.settings.fuelBudget-spent;if(delta>=0){state.accounts.fuel.balance+=delta;log('deposit','fuel',delta,'MXN','Sobrante gasolina')}else p.cashBeforeFuel+=delta;state.accounts.grocery.balance+=p.grocerySurplus;state.accounts.usd.balance+=p.saving;state.accounts.cash.balance+=p.cashBeforeFuel;log('deposit','usd',p.saving,'USD','Ahorro quincenal');if(p.grocerySurplus)log('deposit','grocery',p.grocerySurplus,'MXN','Sobrante mandado');if(p.cashBeforeFuel)log(p.cashBeforeFuel>0?'deposit':'withdraw','cash',Math.abs(p.cashBeforeFuel),'MXN','Cierre de quincena');p.status='closed';p.fuelSpent=spent;p.closedAt=new Date().toISOString();state.openPeriod=null;const d=new Date(state.settings.nextPay+'T12:00:00');d.setDate(d.getDate()+state.settings.frequencyDays);state.settings.nextPay=d.toISOString().slice(0,10);save();alert('Quincena cerrada')}
+$('fDate').value=today();$('pDate').value=today();
 $('fLiters').oninput=()=>{let l=+$('fLiters').value,t=+$('fTotal').value;if(l&&t)$('fPrice').value=(t/l).toFixed(2)};$('fTotal').oninput=()=>$('fLiters').dispatchEvent(new Event('input'));
 $('saveFuel').onclick=()=>{if(!state.openPeriod)return alert('Primero abre una quincena');const total=+$('fTotal').value;if(!total)return alert('Ingresa total');state.fuelLogs.push({id:crypto.randomUUID(),periodId:state.openPeriod.id,vehicle:$('fVehicle').value,date:$('fDate').value,total,liters:+$('fLiters').value||0,price:+$('fPrice').value||0,odometer:+$('fOdo').value||0});['fTotal','fLiters','fPrice','fOdo'].forEach(i=>$(i).value='');save()}
 $('saveMove').onclick=()=>{const id=$('mAccount').value,a=state.accounts[id],amt=+$('mAmount').value;if(!amt)return;if($('mType').value==='withdraw'&&amt>a.balance)return alert('Saldo insuficiente');const type=$('mType').value;a.balance+=type==='deposit'?amt:-amt;log(type,id,amt,a.currency,$('mNote').value);$('mAmount').value='';$('mNote').value='';save()}
@@ -304,38 +161,7 @@ $('saveCfg').onclick=()=>{state.profile.name=$('cfgName').value||'Óscar';Object
 $('exportBtn').onclick=()=>{const b=new Blob([JSON.stringify(state,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='zeikon-wealth-backup.json';a.click()}
 $('importFile').onchange=async e=>{state=JSON.parse(await e.target.files[0].text());ensure();save();alert('Respaldo importado')}
 $('resetBtn').onclick=()=>{if(confirm('¿Borrar todos los datos?')){state=structuredClone(defaults);save()}}
-
-function activeSubscriptions(){
-  return state.subscriptions.filter(s=>!s.cancelled);
-}
-function subscriptionReserveMxn(){
-  const r=rate();
-  return activeSubscriptions().reduce((sum,s)=>sum+(s.currency==='USD'?s.amount*r:s.amount)/2,0);
-}
-function drawWealthChart(){
-  const canvas=$('wealthChart'); if(!canvas) return;
-  const ctx=canvas.getContext('2d');
-  const w=canvas.width,h=canvas.height;
-  ctx.clearRect(0,0,w,h);
-  ctx.fillStyle='#0b1322'; ctx.fillRect(0,0,w,h);
-  const data=state.snapshots.slice().reverse();
-  ctx.strokeStyle='#273449'; ctx.lineWidth=1;
-  for(let i=1;i<=4;i++){const y=i*h/5;ctx.beginPath();ctx.moveTo(40,y);ctx.lineTo(w-16,y);ctx.stroke()}
-  if(!data.length){
-    ctx.fillStyle='#9aa8be';ctx.font='24px -apple-system';ctx.fillText('Aún no hay quincenas cerradas',55,h/2);
-    return;
-  }
-  const vals=data.map(x=>x.netWorth),min=Math.min(...vals),max=Math.max(...vals),range=Math.max(1,max-min);
-  const pts=data.map((x,i)=>({x:40+i*((w-70)/Math.max(1,data.length-1)),y:h-35-((x.netWorth-min)/range)*(h-70)}));
-  ctx.strokeStyle='#4f7cff';ctx.lineWidth=5;ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.stroke();
-  ctx.fillStyle='#39d27d';
-  pts.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,7,0,Math.PI*2);ctx.fill()});
-  ctx.fillStyle='#9aa8be';ctx.font='18px -apple-system';
-  ctx.fillText(mx(max).replace(' MXN',''),40,22);
-  ctx.fillText(mx(min).replace(' MXN',''),40,h-8);
-}
-
-function render(){ensure();const total=accountTotalMxn(),reserved=state.accounts.usd.balance*rate()+state.accounts.grocery.balance+state.accounts.fuel.balance+state.accounts.leftover.balance;$('hello').textContent='Buenos días, '+state.profile.name;$('netWorth').textContent=mx(total);$('available').textContent=mx(state.accounts.cash.balance);$('reserved').textContent=mx(reserved);$('usdTotal').textContent=usd(state.accounts.usd.balance);$('envTotal').textContent=mx(state.accounts.grocery.balance+state.accounts.fuel.balance+state.accounts.leftover.balance);$('cashTotal').textContent=mx(state.accounts.cash.balance);$('periodState').textContent=state.openPeriod?'En proceso':'Sin iniciar';$('nextPay').textContent=new Date(state.settings.nextPay+'T12:00:00').toLocaleDateString('es-MX',{day:'numeric',month:'short',year:'numeric'});$('savingBase').textContent=usd(state.settings.savingUsd);$('fuelBase').textContent=mx(state.settings.fuelBudget);$('payMode').classList.toggle('hidden',today()!==state.settings.nextPay&&!state.openPeriod);const spent=fuelSpent(),delta=state.settings.fuelBudget-spent;$('fuelSpent').textContent=mx(spent);$('fuelBudget').textContent=mx(state.settings.fuelBudget);$('fuelDelta').textContent=delta>=0?mx(delta)+' al sobre':mx(Math.abs(delta))+' excedente';$('fuelList').innerHTML=(state.openPeriod?state.fuelLogs.filter(f=>f.periodId===state.openPeriod.id):[]).map(f=>`<div class="list-item"><strong>${f.vehicle}</strong><div class="row"><span>${f.date}</span><strong>${mx(f.total)}</strong></div><div class="small">${f.liters||0} L · ${f.price?mx(f.price)+'/L':''} · ${f.odometer?'Odómetro '+f.odometer:''}</div></div>`).join('')||'Sin cargas.';const acc=Object.entries(state.accounts);$('accountsList').innerHTML=acc.map(([id,a])=>`<div class="list-item"><div class="row"><strong>${a.name}</strong><strong class="${a.currency==='USD'?'cyan':'green'}">${a.currency==='USD'?usd(a.balance):mx(a.balance)}</strong></div></div>`).join('');$('mAccount').innerHTML=acc.map(([id,a])=>`<option value="${id}">${a.name}</option>`).join('');$('subsList').innerHTML=state.subscriptions.map(s=>`<div class="list-item"><div class="row"><div><strong>${s.name}</strong><div class="small">${s.date||'Sin fecha'} · ${s.method||'Sin método'}</div></div><strong>${s.currency==='USD'?usd(s.amount):mx(s.amount)}</strong></div><button class="secondary" onclick="cancelSub('${s.id}')">${s.cancelled?'Reactivar':'Cancelar'}</button></div>`).join('')||'Sin suscripciones.';$('creditsList').innerHTML=state.credits.map(c=>`<div class="list-item"><div class="row"><div><strong>${c.name}</strong><div class="small">${c.status==='paid'?'Liquidado':'Próximo '+(c.date||'sin fecha')}</div></div><strong>${mx(c.balance)}</strong></div>${c.status!=='paid'?`<button class="secondary" onclick="payCredit('${c.id}')">Registrar abono</button>`:''}</div>`).join('')||'Sin créditos.';$('history').innerHTML=state.movements.map(m=>`<div class="list-item"><div class="row"><div><strong>${state.accounts[m.account]?.name||m.account}</strong><div class="small">${new Date(m.date).toLocaleString('es-MX')} · ${m.note||''}</div></div><strong class="${m.type==='deposit'?'green':'red'}">${m.type==='deposit'?'+':'-'}${m.currency==='USD'?usd(m.amount):mx(m.amount)}</strong></div></div>`).join('')||'Sin movimientos.';$('recent').innerHTML=state.movements.slice(0,6).map(m=>`<div class="row"><span>${m.note||state.accounts[m.account]?.name}</span><strong class="${m.type==='deposit'?'green':'red'}">${m.type==='deposit'?'+':'-'}${m.currency==='USD'?usd(m.amount):mx(m.amount)}</strong></div>`).join('')||'Sin movimientos.';$('cfgName').value=state.profile.name;$('cfgUsd').value=state.settings.initialUsd;$('cfgSaving').value=state.settings.savingUsd;$('cfgUsGroceries').value=state.settings.usGroceriesUsd;$('cfgMxGroceries').value=state.settings.mxGroceries;$('cfgMedical').value=state.settings.medicalUsd;$('cfgGrandma').value=state.settings.grandma;$('cfgClarissa').value=state.settings.clarissa;$('cfgFuel').value=state.settings.fuelBudget;$('cfgFreq').value=String(state.settings.frequencyDays);$('cfgNext').value=state.settings.nextPay;if(state.openPeriod){payDraft={...state.openPeriod};}else{payDraft.saving=state.settings.savingUsd;payDraft.rate=rate();}drawPayWizard();drawWealthChart()
-if('serviceWorker' in navigator)navigator.serviceWorker.register('service-worker.js');render();drawPayWizard();drawWealthChart();
+function render(){ensure();const total=accountTotalMxn(),reserved=state.accounts.usd.balance*rate()+state.accounts.grocery.balance+state.accounts.fuel.balance+state.accounts.leftover.balance;$('hello').textContent='Buenos días, '+state.profile.name;$('netWorth').textContent=mx(total);$('available').textContent=mx(state.accounts.cash.balance);$('reserved').textContent=mx(reserved);$('usdTotal').textContent=usd(state.accounts.usd.balance);$('envTotal').textContent=mx(state.accounts.grocery.balance+state.accounts.fuel.balance+state.accounts.leftover.balance);$('cashTotal').textContent=mx(state.accounts.cash.balance);$('periodState').textContent=state.openPeriod?'En proceso':'Sin iniciar';$('nextPay').textContent=new Date(state.settings.nextPay+'T12:00:00').toLocaleDateString('es-MX',{day:'numeric',month:'short',year:'numeric'});$('savingBase').textContent=usd(state.settings.savingUsd);$('fuelBase').textContent=mx(state.settings.fuelBudget);$('payMode').classList.toggle('hidden',today()!==state.settings.nextPay&&!state.openPeriod);const spent=fuelSpent(),delta=state.settings.fuelBudget-spent;$('fuelSpent').textContent=mx(spent);$('fuelBudget').textContent=mx(state.settings.fuelBudget);$('fuelDelta').textContent=delta>=0?mx(delta)+' al sobre':mx(Math.abs(delta))+' excedente';$('fuelList').innerHTML=(state.openPeriod?state.fuelLogs.filter(f=>f.periodId===state.openPeriod.id):[]).map(f=>`<div class="list-item"><strong>${f.vehicle}</strong><div class="row"><span>${f.date}</span><strong>${mx(f.total)}</strong></div><div class="small">${f.liters||0} L · ${f.price?mx(f.price)+'/L':''} · ${f.odometer?'Odómetro '+f.odometer:''}</div></div>`).join('')||'Sin cargas.';const acc=Object.entries(state.accounts);$('accountsList').innerHTML=acc.map(([id,a])=>`<div class="list-item"><div class="row"><strong>${a.name}</strong><strong class="${a.currency==='USD'?'cyan':'green'}">${a.currency==='USD'?usd(a.balance):mx(a.balance)}</strong></div></div>`).join('');$('mAccount').innerHTML=acc.map(([id,a])=>`<option value="${id}">${a.name}</option>`).join('');$('subsList').innerHTML=state.subscriptions.map(s=>`<div class="list-item"><div class="row"><div><strong>${s.name}</strong><div class="small">${s.date||'Sin fecha'} · ${s.method||'Sin método'}</div></div><strong>${s.currency==='USD'?usd(s.amount):mx(s.amount)}</strong></div><button class="secondary" onclick="cancelSub('${s.id}')">${s.cancelled?'Reactivar':'Cancelar'}</button></div>`).join('')||'Sin suscripciones.';$('creditsList').innerHTML=state.credits.map(c=>`<div class="list-item"><div class="row"><div><strong>${c.name}</strong><div class="small">${c.status==='paid'?'Liquidado':'Próximo '+(c.date||'sin fecha')}</div></div><strong>${mx(c.balance)}</strong></div>${c.status!=='paid'?`<button class="secondary" onclick="payCredit('${c.id}')">Registrar abono</button>`:''}</div>`).join('')||'Sin créditos.';$('history').innerHTML=state.movements.map(m=>`<div class="list-item"><div class="row"><div><strong>${state.accounts[m.account]?.name||m.account}</strong><div class="small">${new Date(m.date).toLocaleString('es-MX')} · ${m.note||''}</div></div><strong class="${m.type==='deposit'?'green':'red'}">${m.type==='deposit'?'+':'-'}${m.currency==='USD'?usd(m.amount):mx(m.amount)}</strong></div></div>`).join('')||'Sin movimientos.';$('recent').innerHTML=state.movements.slice(0,4).map(m=>`<div class="row"><span>${m.note||state.accounts[m.account]?.name}</span><strong class="${m.type==='deposit'?'green':'red'}">${m.type==='deposit'?'+':'-'}${m.currency==='USD'?usd(m.amount):mx(m.amount)}</strong></div>`).join('')||'Sin movimientos.';$('cfgName').value=state.profile.name;$('cfgUsd').value=state.settings.initialUsd;$('cfgSaving').value=state.settings.savingUsd;$('cfgUsGroceries').value=state.settings.usGroceriesUsd;$('cfgMxGroceries').value=state.settings.mxGroceries;$('cfgMedical').value=state.settings.medicalUsd;$('cfgGrandma').value=state.settings.grandma;$('cfgClarissa').value=state.settings.clarissa;$('cfgFuel').value=state.settings.fuelBudget;$('cfgFreq').value=String(state.settings.frequencyDays);$('cfgNext').value=state.settings.nextPay;if(state.openPeriod){const p=state.openPeriod;$('pDate').value=p.date;$('pPay').value=p.pay;$('pSaving').value=p.saving;$('pExtraUsd').value=p.extraUsd;$('pExtraMxn').value=p.extraMxn;$('pUsTicket').value=p.usTicket;$('pChanged').value=p.changed;$('pRate').value=p.rate;$('pMxTicket').value=p.mxTicket}else{$('pSaving').value=state.settings.savingUsd;$('pRate').value=rate()}preview()}
+if('serviceWorker' in navigator)navigator.serviceWorker.register('service-worker.js');render();
 </script>
 </body></html>
