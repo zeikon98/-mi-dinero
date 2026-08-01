@@ -3,365 +3,164 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0B1220">
+<meta name="theme-color" content="#080d19">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
-<title>Zeikon Wealth</title>
+<title>Zeikon Wealth v1.0 Beta</title>
 <style>
-:root{
-  --bg:#0B1220;--panel:#111827;--panel2:#172033;--blue:#2563EB;--green:#22C55E;
-  --cyan:#22D3EE;--purple:#A855F7;--yellow:#FBBF24;--text:#F8FAFC;--muted:#94A3B8;--danger:#EF4444
-}
-*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-header{position:sticky;top:0;background:rgba(11,18,32,.96);backdrop-filter:blur(10px);padding:18px 16px 10px;z-index:4}
-h1{margin:0;font-size:28px} .sub{color:var(--muted);font-size:13px}
-nav{display:flex;gap:8px;overflow:auto;padding:8px 16px 14px;background:var(--bg);position:sticky;top:62px;z-index:3}
-nav button{border:0;border-radius:999px;padding:10px 14px;background:var(--panel2);color:var(--text);white-space:nowrap}
-nav button.active{background:var(--blue)}
-main{padding:0 16px 100px;max-width:760px;margin:auto}
-.screen{display:none}.screen.active{display:block}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.card{background:var(--panel);border:1px solid #263249;border-radius:18px;padding:16px;margin:12px 0}
-.kpi{min-height:115px}.label{color:var(--muted);font-size:13px}.value{font-weight:800;font-size:25px;margin-top:8px}
-.green{color:var(--green)} .cyan{color:var(--cyan)} .purple{color:var(--purple)} .yellow{color:var(--yellow)}
-label{display:block;color:var(--muted);font-size:13px;margin:12px 0 6px}
-input,select{width:100%;padding:14px;border-radius:12px;border:1px solid #334155;background:#0F172A;color:var(--text);font-size:17px}
-button.primary{width:100%;border:0;border-radius:14px;padding:15px;background:var(--blue);color:white;font-size:17px;font-weight:700;margin-top:16px}
-button.secondary{width:100%;border:1px solid #334155;border-radius:14px;padding:13px;background:var(--panel2);color:white;font-size:15px;margin-top:10px}
-button.danger{background:transparent;border:1px solid var(--danger);color:#FCA5A5}
-.row{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid #223047}.row:last-child{border-bottom:0}
-table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:10px 8px;text-align:left;border-bottom:1px solid #273449}th{color:var(--muted)}
-.notice{padding:12px;border-radius:12px;background:#172554;color:#BFDBFE;margin:12px 0;font-size:14px}
-.small{font-size:12px;color:var(--muted)}
-@media(max-width:480px){.grid{grid-template-columns:1fr 1fr}.value{font-size:22px}}
-
-.progress{height:12px;background:#263249;border-radius:999px;overflow:hidden;margin-top:10px}
-.progress>span{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--cyan));border-radius:999px}
-.badge{display:inline-block;padding:5px 9px;border-radius:999px;font-size:12px;font-weight:700}
-.badge.ok{background:#14532D;color:#BBF7D0}.badge.soon{background:#713F12;color:#FDE68A}.badge.late{background:#7F1D1D;color:#FECACA}
-.chart{display:flex;align-items:flex-end;gap:8px;height:180px;padding-top:15px}
-.bar{flex:1;min-width:18px;background:linear-gradient(180deg,var(--cyan),var(--blue));border-radius:8px 8px 3px 3px;position:relative}
-.bar span{position:absolute;bottom:-24px;left:50%;transform:translateX(-50%);font-size:10px;color:var(--muted)}
-.photo-preview{width:100%;max-height:240px;object-fit:contain;border-radius:12px;margin-top:10px;display:none}
-
+:root{--bg:#080d19;--panel:#111827;--panel2:#172033;--line:#2b3950;--text:#f8fafc;--muted:#9aa8be;--gold:#d6b65e;--blue:#4f7cff;--green:#39d27d;--cyan:#42cce8;--purple:#a970ff;--yellow:#f6c64f;--red:#ff6b75}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif}
+button,input,select,textarea{font:inherit}
+header{padding:calc(18px + env(safe-area-inset-top)) 18px 12px;position:sticky;top:0;background:rgba(8,13,25,.94);backdrop-filter:blur(16px);z-index:5}
+.brand{display:flex;align-items:center;gap:12px}.shield{width:42px;height:46px;clip-path:polygon(50% 0,92% 17%,84% 74%,50% 100%,16% 74%,8% 17%);background:linear-gradient(145deg,var(--gold),#886f2d);display:grid;place-items:center;font-weight:900;color:#080d19;font-size:22px}
+h1{font-size:22px;margin:0}.tagline{font-size:12px;color:var(--muted);margin-top:2px}
+main{padding:4px 16px 110px;max-width:760px;margin:auto}.screen{display:none}.screen.active{display:block}
+.card{background:linear-gradient(150deg,var(--panel),#0e1625);border:1px solid var(--line);border-radius:22px;padding:18px;margin:14px 0;box-shadow:0 12px 32px rgba(0,0,0,.18)}
+.hero{padding:22px;background:linear-gradient(145deg,#162036,#101827);border-color:#394760}
+.eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}.hero-value{font-size:36px;font-weight:850;margin:9px 0 5px}
+.sub,.small{color:var(--muted);font-size:13px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.kpi{min-height:122px}.kpi .value{font-size:24px;font-weight:820;margin-top:10px}
+.cyan{color:var(--cyan)}.green{color:var(--green)}.purple{color:var(--purple)}.yellow{color:var(--yellow)}.red{color:var(--red)}
+.row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:13px 0;border-bottom:1px solid #223047}.row:last-child{border-bottom:0}
+.label{font-size:13px;color:var(--muted)}label{display:block;margin:15px 0 7px;color:var(--muted);font-size:13px}
+input,select,textarea{width:100%;padding:15px 14px;border:1px solid #33425b;border-radius:14px;background:#0b1322;color:var(--text);font-size:17px;outline:none}
+button{border:0;cursor:pointer}.primary{width:100%;padding:16px;border-radius:15px;background:linear-gradient(135deg,#4f7cff,#315ee8);color:white;font-weight:800;font-size:17px;margin-top:16px}
+.secondary{width:100%;padding:14px;border-radius:15px;background:var(--panel2);border:1px solid #33425b;color:white;font-weight:700;margin-top:10px}.danger{border-color:#6d3039;color:#ffadb4;background:#24151b}
+.notice{padding:13px;border-radius:14px;background:#162544;border:1px solid #274273;color:#c8dcff;font-size:13px;margin:12px 0}
+.bottom-nav{position:fixed;left:0;right:0;bottom:0;padding:9px 10px calc(9px + env(safe-area-inset-bottom));background:rgba(8,13,25,.96);backdrop-filter:blur(18px);display:grid;grid-template-columns:repeat(5,1fr);gap:5px;border-top:1px solid #1e293b;z-index:10}
+.navbtn{padding:8px 4px;background:transparent;color:var(--muted);font-size:11px;border-radius:13px}.navbtn b{display:block;font-size:21px;line-height:24px;margin-bottom:3px}.navbtn.active{color:white;background:#172033}.fab{background:linear-gradient(135deg,#4f7cff,#315ee8);color:white;transform:translateY(-10px);box-shadow:0 10px 24px rgba(49,94,232,.38)}
+.hidden{display:none!important}.list-item{padding:14px;border:1px solid #293750;border-radius:16px;margin:10px 0;background:#0d1524}.tabs{display:flex;gap:8px;overflow:auto;padding-bottom:4px}.tabs button{white-space:nowrap;padding:10px 13px;border-radius:999px;background:#172033;color:#bdc8da}.tabs button.active{background:#294da9;color:#fff}
+@media(max-width:390px){.hero-value{font-size:31px}.kpi .value{font-size:21px}}
 </style>
 </head>
 <body>
-<header>
-  <h1>Zeikon Wealth</h1>
-  <div class="sub">Constancia · Esfuerzo · Lealtad</div>
-</header>
-<nav>
-  <button data-screen="inicio" class="active">Home</button>
-  <button data-screen="quincena">Payday</button>
-  <button data-screen="mandado">Groceries</button>
-  <button data-screen="historial">Activity</button>
-  <button data-screen="suscripciones">Suscripciones</button>
-  <button data-screen="metas">Metas</button>
-  <button data-screen="asistente">Assistant</button>
-  <button data-screen="ajustes">More</button>
-</nav>
-
+<header><div class="brand"><div class="shield">Z</div><div><h1>Zeikon Wealth</h1><div class="tagline">Consistency Creates Wealth · v1.0 Beta</div></div></div></header>
 <main>
-<section id="inicio" class="screen active">
-  <div class="card" style="background:linear-gradient(135deg,#111827,#172033);border-color:#334155">
-    <div class="small">Buenos días, Óscar</div>
-    <h2 style="margin:6px 0 0">Tu constancia está construyendo patrimonio.</h2>
-  </div>
-  <div class="grid">
-    <div class="card kpi"><div class="label">Fondo ahorro</div><div class="value cyan" id="kpiFondo">$1,000 USD</div></div>
-    <div class="card kpi"><div class="label">Sobre mandado</div><div class="value green" id="kpiSobre">$0 MXN</div></div>
-    <div class="card kpi"><div class="label">Patrimonio total</div><div class="value purple" id="kpiPatrimonio">$17,000 MXN</div></div>
-    <div class="card kpi"><div class="label">Disponible última quincena</div><div class="value yellow" id="kpiLibre">Sin registro</div></div>
-  </div>
-  <div class="card">
-    <div class="row"><span>Próximo pago</span><strong id="proximoPago">2 ago 2026</strong></div>
-    <div class="row"><span>Ahorro por quincena</span><strong id="ahorroQuincena">$500 USD</strong></div>
-    <div class="row"><span>Plataformas mensuales</span><strong id="plataformasMes">$1,780 MXN aprox.</strong></div>
-  </div>
-  <div class="notice">Tus datos se guardan en Safari en este iPhone. Exporta un respaldo de vez en cuando.</div>
+<section id="home" class="screen active">
+<div id="payMode" class="card hidden"><div class="eyebrow">Modo Pago</div><h2>Hoy construimos patrimonio.</h2><div class="sub">Tienes un pago programado o una quincena abierta.</div><button class="primary" onclick="go('payday')">Continuar</button></div>
+<div class="card hero"><div class="sub" id="hello">Buenos días, Óscar</div><div class="eyebrow" style="margin-top:14px">Patrimonio total</div><div class="hero-value" id="netWorth">$17,000 MXN</div><div class="sub"><span id="available">$0</span> disponible · <span id="reserved">$17,000</span> reservado</div></div>
+<div class="grid">
+<div class="card kpi"><div class="label">Fondos USD</div><div class="value cyan" id="usdTotal">$1,000 USD</div></div>
+<div class="card kpi"><div class="label">Sobres MXN</div><div class="value green" id="envTotal">$0 MXN</div></div>
+<div class="card kpi"><div class="label">Efectivo</div><div class="value yellow" id="cashTotal">$0 MXN</div></div>
+<div class="card kpi"><div class="label">Estado</div><div class="value purple" id="periodState">Sin iniciar</div></div>
+</div>
+<div class="card"><div class="row"><span>Próximo pago</span><strong id="nextPay">2 ago 2026</strong></div><div class="row"><span>Ahorro base</span><strong id="savingBase">$500 USD</strong></div><div class="row"><span>Gasolina</span><strong id="fuelBase">$800 MXN</strong></div></div>
+<div class="card"><div class="eyebrow">Actividad reciente</div><div id="recent" class="small" style="margin-top:12px">Sin movimientos.</div></div>
 </section>
 
-<section id="quincena" class="screen">
-  <div class="card">
-    <h2>Registrar quincena</h2>
-    <label>Fecha de pago</label><input type="date" id="qFecha">
-    <label>Pago recibido (USD)</label><input type="number" step="0.01" id="qPago" value="1260">
-    <label>Tipo de cambio</label><input type="number" step="0.01" id="qCambio" value="17">
-    <button class="primary" id="guardarQuincena">Guardar quincena</button>
-  </div>
-  <div class="card" id="previewQuincena"></div>
+<section id="payday" class="screen">
+<div class="card"><div class="eyebrow">Modo Pago</div><h2>Registrar quincena</h2>
+<label>Fecha</label><input type="date" id="pDate">
+<label>Pago recibido (USD)</label><input type="number" step="0.01" id="pPay" value="1260">
+<label>Ahorro de esta quincena (USD)</label><input type="number" step="0.01" id="pSaving" value="500">
+<label>Ingreso extra USD</label><input type="number" step="0.01" id="pExtraUsd" value="0">
+<label>Ingreso extra MXN</label><input type="number" step="0.01" id="pExtraMxn" value="0">
+<label>Ticket mandado EUA (USD)</label><input type="number" step="0.01" id="pUsTicket" value="0">
+<label>Dólares cambiados</label><input type="number" step="0.01" id="pChanged">
+<label>Tipo de cambio</label><input type="number" step="0.01" id="pRate" value="17">
+<label>Ticket mandado México (MXN)</label><input type="number" step="0.01" id="pMxTicket" value="0">
+<button class="primary" id="savePeriod">Guardar quincena abierta</button>
+<button class="secondary" id="closePeriod">Cerrar quincena</button>
+</div>
+<div class="card"><h3>Resumen</h3><div id="periodPreview" class="small"></div></div>
 </section>
 
-<section id="mandado" class="screen">
-  <div class="card">
-    <h2>Registrar mandado</h2>
-    <label>Fecha</label><input type="date" id="mFecha">
-    <label>Ticket Estados Unidos (USD)</label><input type="number" step="0.01" id="mUsa">
-    <label>Ticket México (MXN)</label><input type="number" step="0.01" id="mMex">
-    <label>Tipo de cambio usado</label><input type="number" step="0.01" id="mCambio" value="17">
-<label>Foto opcional de los tickets</label><input type="file" accept="image/*" capture="environment" id="mFoto">
-<img id="fotoPreview" class="photo-preview" alt="Vista previa del ticket">
-    <button class="primary" id="guardarMandado">Guardar mandado</button>
-  </div>
-  <div class="card" id="previewMandado"></div>
+<section id="fuel" class="screen">
+<div class="card"><div class="eyebrow">Fuel</div><h2>Nueva carga</h2>
+<label>Vehículo</label><select id="fVehicle"><option>Bajaj Pulsar N250</option><option>Toyota Corolla 2007</option></select>
+<label>Fecha</label><input type="date" id="fDate">
+<label>Total MXN</label><input type="number" step="0.01" id="fTotal">
+<label>Litros</label><input type="number" step="0.001" id="fLiters">
+<label>Precio por litro</label><input type="number" step="0.01" id="fPrice">
+<label>Odómetro</label><input type="number" id="fOdo">
+<button class="primary" id="saveFuel">Guardar carga</button></div>
+<div class="card"><div class="row"><span>Gastado</span><strong id="fuelSpent">$0 MXN</strong></div><div class="row"><span>Presupuesto</span><strong id="fuelBudget">$800 MXN</strong></div><div class="row"><span>Resultado</span><strong id="fuelDelta">$800 al sobre</strong></div></div>
+<div class="card"><h3>Cargas</h3><div id="fuelList" class="small">Sin cargas.</div></div>
 </section>
 
-<section id="historial" class="screen">
-  <div class="card"><h2>Quincenas</h2><div style="overflow:auto"><table id="tablaQuincenas"></table></div></div>
-  <div class="card"><h2>Mandado</h2><div style="overflow:auto"><table id="tablaMandado"></table></div></div>
+<section id="vault" class="screen">
+<div class="tabs"><button class="active" data-tab="envelopes">Sobres</button><button data-tab="subscriptions">Suscripciones</button><button data-tab="credits">Créditos</button></div>
+<div id="envelopes" class="tabpage">
+<div class="card"><h2>Sobres y fondos</h2><div id="accountsList"></div></div>
+<div class="card"><h3>Movimiento</h3><label>Cuenta</label><select id="mAccount"></select><label>Tipo</label><select id="mType"><option value="deposit">Depositar</option><option value="withdraw">Retirar</option></select><label>Cantidad</label><input type="number" id="mAmount"><label>Nota</label><input id="mNote"><button class="primary" id="saveMove">Guardar</button></div>
+</div>
+<div id="subscriptions" class="tabpage hidden">
+<div class="card"><h2>Suscripciones</h2><div id="subsList"></div></div>
+<div class="card"><h3>Nueva suscripción</h3><label>Nombre</label><input id="sName"><label>Monto</label><input type="number" id="sAmount"><label>Moneda</label><select id="sCurrency"><option>MXN</option><option>USD</option></select><label>Fecha de cobro</label><input type="date" id="sDate"><label>Método de pago</label><input id="sMethod"><button class="primary" id="saveSub">Agregar</button></div>
+</div>
+<div id="credits" class="tabpage hidden">
+<div class="card"><h2>Créditos</h2><div id="creditsList"></div></div>
+<div class="card"><h3>Nuevo crédito</h3><label>Nombre</label><input id="cName"><label>Saldo pendiente MXN</label><input type="number" id="cBalance"><label>Pago mensual MXN</label><input type="number" id="cMonthly"><label>Próximo pago</label><input type="date" id="cDate"><button class="primary" id="saveCredit">Agregar</button></div>
+</div>
 </section>
 
-<section id="ajustes" class="screen">
-  <div class="card">
-    <h2>Ajustes</h2>
-    <label>Fondo inicial USD</label><input type="number" id="aFondo">
-    <label>Ahorro por quincena USD</label><input type="number" id="aAhorro">
-    <label>Mandado EUA USD</label><input type="number" id="aMandadoUsa">
-    <label>Fondo médico USD</label><input type="number" id="aMedico">
-    <label>Abuela MXN</label><input type="number" id="aAbuela">
-    <label>Mandado México MXN</label><input type="number" id="aMandadoMex">
-    <label>Clarissa MXN</label><input type="number" id="aClarissa">
-    <label>Gasolina MXN</label><input type="number" id="aGasolina">
-    <button class="primary" id="guardarAjustes">Guardar ajustes</button>
-    <button class="secondary" id="exportar">Exportar respaldo</button>
-    <label>Importar respaldo</label><input type="file" id="importar" accept=".json">
-    <button class="secondary danger" id="borrarTodo">Borrar todos los datos</button>
-  </div>
+<section id="activity" class="screen"><div class="card"><div class="eyebrow">Activity</div><h2>Historial</h2><div id="history" class="small">Sin movimientos.</div></div></section>
+
+<section id="more" class="screen">
+<div class="card"><div class="eyebrow">More</div><h2>Configuración</h2>
+<label>Nombre</label><input id="cfgName">
+<label>Fondo USD inicial</label><input type="number" id="cfgUsd">
+<label>Ahorro base USD</label><input type="number" id="cfgSaving">
+<label>Mandado EUA USD</label><input type="number" id="cfgUsGroceries">
+<label>Mandado México MXN</label><input type="number" id="cfgMxGroceries">
+<label>Fondo médico USD</label><input type="number" id="cfgMedical">
+<label>Abuela MXN</label><input type="number" id="cfgGrandma">
+<label>Clarissa MXN</label><input type="number" id="cfgClarissa">
+<label>Gasolina MXN</label><input type="number" id="cfgFuel">
+<label>Frecuencia</label><select id="cfgFreq"><option value="7">Semanal</option><option value="14">Cada 14 días</option><option value="15">Cada 15 días</option><option value="30">Mensual</option></select>
+<label>Próximo pago</label><input type="date" id="cfgNext">
+<button class="primary" id="saveCfg">Guardar configuración</button>
+<button class="secondary" id="exportBtn">Exportar respaldo</button>
+<label>Importar respaldo</label><input type="file" accept=".json" id="importFile">
+<button class="secondary danger" id="resetBtn">Borrar datos</button>
+</div>
 </section>
-
-<section id="suscripciones" class="screen">
-  <div class="card">
-    <h2>Suscripciones</h2>
-    <div id="listaSuscripciones"></div>
-  </div>
-</section>
-
-<section id="metas" class="screen">
-  <div class="card">
-    <h2>Metas de ahorro</h2>
-    <label>Nombre de la meta</label><input id="metaNombre" placeholder="Ej. Fondo de emergencia">
-    <label>Meta en MXN</label><input type="number" id="metaMonto" placeholder="20000">
-    <button class="primary" id="agregarMeta">Agregar meta</button>
-  </div>
-  <div id="listaMetas"></div>
-  <div class="card">
-    <h2>Crecimiento del patrimonio</h2>
-    <div class="chart" id="graficaPatrimonio"></div>
-  </div>
-</section>
-
-
-<section id="asistente" class="screen">
-  <div class="card">
-    <div class="small">Zeikon Assistant</div>
-    <h2 id="wizardTitle">Vamos a registrar tu quincena</h2>
-    <div class="progress"><span id="wizardProgress" style="width:20%"></span></div>
-    <div id="wizardBody" style="margin-top:18px"></div>
-    <button class="primary" id="wizardNext">Continuar</button>
-    <button class="secondary" id="wizardBack">Atrás</button>
-  </div>
-</section>
-
 </main>
 
+<nav class="bottom-nav">
+<button class="navbtn active" data-go="home"><b>⌂</b>Home</button>
+<button class="navbtn" data-go="fuel"><b>⛽</b>Fuel</button>
+<button class="navbtn fab" data-go="payday"><b>＋</b>Pago</button>
+<button class="navbtn" data-go="vault"><b>▣</b>Vault</button>
+<button class="navbtn" data-go="more"><b>•••</b>More</button>
+</nav>
+
 <script>
-const DEFAULTS={
-  fondoInicial:1000, ahorroQuincenal:500, mandadoUsa:30, medico:30,
-  abuela:2600, mandadoMex:2500, clarissa:1000, gasolina:800,
-  netflix:369, crunchy:159, geforce:439, youtube:159, albionUsd:15, chatgpt:399,
-  subscriptionDays:{Netflix:5,Crunchyroll:8,'GeForce NOW':12,'YouTube Premium':15,'Albion Online':20,ChatGPT:22}
-};
-let state=JSON.parse(localStorage.getItem('miDineroState')||'null')||{settings:{...DEFAULTS},quincenas:[],mandados:[],metas:[]};
-if(!state.metas) state.metas=[]; if(!state.settings.subscriptionDays) state.settings.subscriptionDays={...DEFAULTS.subscriptionDays};
-const $=id=>document.getElementById(id);
+const $=x=>document.getElementById(x), today=()=>new Date().toISOString().slice(0,10);
 const mx=n=>'$'+Number(n||0).toLocaleString('es-MX',{maximumFractionDigits:2})+' MXN';
 const usd=n=>'$'+Number(n||0).toLocaleString('en-US',{maximumFractionDigits:2})+' USD';
-function save(){localStorage.setItem('miDineroState',JSON.stringify(state));render();}
-function plataformasQuincena(cambio){
-  const s=state.settings;
-  return (s.netflix+s.crunchy+s.geforce+s.youtube+s.chatgpt)/2 + (s.albionUsd*cambio)/2;
-}
-function resumenQuincena(pago,cambio){
-  const s=state.settings, gastosUsa=s.mandadoUsa+s.medico, usdCambiar=pago-s.ahorroQuincenal-gastosUsa;
-  const mxnRecibidos=usdCambiar*cambio, gastosFijos=s.abuela+s.mandadoMex+s.clarissa+s.gasolina;
-  const plataformas=plataformasQuincena(cambio), libre=mxnRecibidos-gastosFijos-plataformas;
-  return {gastosUsa,usdCambiar,mxnRecibidos,gastosFijos,plataformas,libre};
-}
-function fondoActual(){return state.settings.fondoInicial+state.quincenas.length*state.settings.ahorroQuincenal}
-function sobreActual(){return state.mandados.reduce((a,m)=>a+m.totalSobre,0)}
-function latestCambio(){return state.quincenas.at(-1)?.cambio||17}
-
-function diasParaCobro(day){
-  const now=new Date(), due=new Date(now.getFullYear(),now.getMonth(),day);
-  if(due<new Date(now.getFullYear(),now.getMonth(),now.getDate())) due.setMonth(due.getMonth()+1);
-  return Math.ceil((due-now)/86400000);
-}
-function renderSuscripciones(){
-  const s=state.settings;
-  const items=[
-    ['Netflix',s.netflix,'MXN'],['Crunchyroll',s.crunchy,'MXN'],['GeForce NOW',s.geforce,'MXN'],
-    ['YouTube Premium',s.youtube,'MXN'],['Albion Online',s.albionUsd,'USD'],['ChatGPT',s.chatgpt,'MXN']
-  ];
-  $('listaSuscripciones').innerHTML=items.map(([n,m,mon])=>{
-    const d=diasParaCobro(s.subscriptionDays[n]||1), cls=d<=3?'late':d<=7?'soon':'ok';
-    return `<div class="row"><div><strong>${n}</strong><div class="small">Cobro el día ${s.subscriptionDays[n]||1}</div></div>
-    <div style="text-align:right"><strong>${mon==='USD'?usd(m):mx(m)}</strong><br><span class="badge ${cls}">${d} días</span></div></div>`;
-  }).join('');
-}
-function renderMetas(){
-  const patrimonio=fondoActual()*latestCambio()+sobreActual();
-  $('listaMetas').innerHTML=state.metas.map((m,i)=>{
-    const p=Math.min(100,patrimonio/m.monto*100);
-    return `<div class="card"><div class="row"><strong>${m.nombre}</strong><button onclick="eliminarMeta(${i})" style="background:none;border:0;color:#FCA5A5">Eliminar</button></div>
-    <div class="value">${mx(m.monto)}</div><div class="small">${p.toFixed(1)}% alcanzado con tu patrimonio actual</div>
-    <div class="progress"><span style="width:${p}%"></span></div></div>`;
-  }).join('') || '<div class="card small">Todavía no tienes metas.</div>';
-  const values=state.quincenas.slice(-8).map(q=>q.fondo*q.cambio+(q.sobre||0));
-  const max=Math.max(...values,1);
-  $('graficaPatrimonio').innerHTML=values.map((v,i)=>`<div class="bar" style="height:${Math.max(8,v/max*150)}px"><span>${i+1}</span></div>`).join('') ||
-  '<div class="small">Registra quincenas para ver la gráfica.</div>';
-}
-window.eliminarMeta=i=>{state.metas.splice(i,1);save()};
-
-function render(){
-  $('kpiFondo').textContent=usd(fondoActual());
-  $('kpiSobre').textContent=mx(sobreActual());
-  $('kpiPatrimonio').textContent=mx(fondoActual()*latestCambio()+sobreActual());
-  $('kpiLibre').textContent=state.quincenas.length?mx(state.quincenas.at(-1).libre):'Sin registro';
-  $('ahorroQuincena').textContent=usd(state.settings.ahorroQuincenal);
-  const pm=(state.settings.netflix+state.settings.crunchy+state.settings.geforce+state.settings.youtube+state.settings.chatgpt+state.settings.albionUsd*latestCambio());
-  $('plataformasMes').textContent=mx(pm);
-  const next=new Date('2026-08-02T12:00:00');
-  next.setDate(next.getDate()+14*state.quincenas.length);
-  $('proximoPago').textContent=next.toLocaleDateString('es-MX',{day:'numeric',month:'short',year:'numeric'});
-  $('qFecha').value=next.toISOString().slice(0,10); $('mFecha').value=next.toISOString().slice(0,10);
-  $('mCambio').value=latestCambio(); $('qCambio').value=latestCambio();
-  const s=state.settings;
-  ['Fondo','Ahorro','MandadoUsa','Medico','Abuela','MandadoMex','Clarissa','Gasolina'].forEach(()=>{});
-  $('aFondo').value=s.fondoInicial;$('aAhorro').value=s.ahorroQuincenal;$('aMandadoUsa').value=s.mandadoUsa;$('aMedico').value=s.medico;
-  $('aAbuela').value=s.abuela;$('aMandadoMex').value=s.mandadoMex;$('aClarissa').value=s.clarissa;$('aGasolina').value=s.gasolina;
-  $('tablaQuincenas').innerHTML='<tr><th>Fecha</th><th>Pago</th><th>Cambio</th><th>Libre</th><th>Fondo</th></tr>'+
-    state.quincenas.map(q=>`<tr><td>${q.fecha}</td><td>${usd(q.pago)}</td><td>${q.cambio}</td><td>${mx(q.libre)}</td><td>${usd(q.fondo)}</td></tr>`).join('');
-  $('tablaMandado').innerHTML='<tr><th>Fecha</th><th>Ticket EUA</th><th>Ticket MX</th><th>Al sobre</th></tr>'+
-    state.mandados.map(m=>`<tr><td>${m.fecha}</td><td>${usd(m.ticketUsa)}</td><td>${mx(m.ticketMex)}</td><td>${mx(m.totalSobre)}${m.foto?'<br><span class="badge ok">Foto</span>':''}</td></tr>`).join('');
-  previewQ();previewM();renderSuscripciones();renderMetas();
-}
-function previewQ(){
-  const r=resumenQuincena(+$('qPago').value||0,+$('qCambio').value||0);
-  $('previewQuincena').innerHTML=`<h3>Vista previa</h3>
-  <div class="row"><span>Dólares a cambiar</span><strong>${usd(r.usdCambiar)}</strong></div>
-  <div class="row"><span>Pesos recibidos</span><strong>${mx(r.mxnRecibidos)}</strong></div>
-  <div class="row"><span>Gastos fijos</span><strong>${mx(r.gastosFijos)}</strong></div>
-  <div class="row"><span>Plataformas</span><strong>${mx(r.plataformas)}</strong></div>
-  <div class="row"><span>Dinero libre</span><strong class="${r.libre<0?'':'green'}">${mx(r.libre)}</strong></div>
-  <div class="row"><span>Fondo después de guardar</span><strong>${usd(fondoActual()+state.settings.ahorroQuincenal)}</strong></div>`;
-}
-function previewM(){
-  const s=state.settings, usa=+$('mUsa').value||0, mex=+$('mMex').value||0, cambio=+$('mCambio').value||0;
-  const sobraUsa=Math.max(s.mandadoUsa-usa,0), sobraMex=Math.max(s.mandadoMex-mex,0), total=sobraUsa*cambio+sobraMex;
-  $('previewMandado').innerHTML=`<h3>Vista previa</h3>
-  <div class="row"><span>Sobra EUA</span><strong>${usd(sobraUsa)}</strong></div>
-  <div class="row"><span>Sobra México</span><strong>${mx(sobraMex)}</strong></div>
-  <div class="row"><span>Guardar en el sobre</span><strong class="green">${mx(total)}</strong></div>`;
-}
-
-let pendingPhoto='';
-$('mFoto').onchange=e=>{
-  const f=e.target.files[0]; if(!f)return;
-  const reader=new FileReader();
-  reader.onload=ev=>{pendingPhoto=ev.target.result;$('fotoPreview').src=pendingPhoto;$('fotoPreview').style.display='block'};
-  reader.readAsDataURL(f);
-};
-
-document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
-  
-let pendingPhoto='';
-$('mFoto').onchange=e=>{
-  const f=e.target.files[0]; if(!f)return;
-  const reader=new FileReader();
-  reader.onload=ev=>{pendingPhoto=ev.target.result;$('fotoPreview').src=pendingPhoto;$('fotoPreview').style.display='block'};
-  reader.readAsDataURL(f);
-};
-
-document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));
-  document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));
-  b.classList.add('active');$(b.dataset.screen).classList.add('active');
-});
-['qPago','qCambio'].forEach(id=>$(id).addEventListener('input',previewQ));
-['mUsa','mMex','mCambio'].forEach(id=>$(id).addEventListener('input',previewM));
-$('guardarQuincena').onclick=()=>{
-  const pago=+$('qPago').value,cambio=+$('qCambio').value;if(!pago||!cambio)return alert('Ingresa pago y tipo de cambio');
-  const r=resumenQuincena(pago,cambio);
-  state.quincenas.push({fecha:$('qFecha').value,pago,cambio,...r,fondo:fondoActual()+state.settings.ahorroQuincenal,sobre:sobreActual()});
-  save();alert('Quincena guardada');
-};
-$('guardarMandado').onclick=()=>{
-  const ticketUsa=+$('mUsa').value||0,ticketMex=+$('mMex').value||0,cambio=+$('mCambio').value||0;
-  const sobraUsa=Math.max(state.settings.mandadoUsa-ticketUsa,0),sobraMex=Math.max(state.settings.mandadoMex-ticketMex,0);
-  const totalSobre=sobraUsa*cambio+sobraMex;
-  state.mandados.push({fecha:$('mFecha').value,ticketUsa,ticketMex,cambio,sobraUsa,sobraMex,totalSobre,foto:pendingPhoto});
-  pendingPhoto='';$('fotoPreview').style.display='none';$('mFoto').value='';
-  $('mUsa').value='';$('mMex').value='';save();alert('Mandado guardado');
-};
-$('guardarAjustes').onclick=()=>{
-  Object.assign(state.settings,{fondoInicial:+$('aFondo').value,ahorroQuincenal:+$('aAhorro').value,mandadoUsa:+$('aMandadoUsa').value,
-  medico:+$('aMedico').value,abuela:+$('aAbuela').value,mandadoMex:+$('aMandadoMex').value,clarissa:+$('aClarissa').value,gasolina:+$('aGasolina').value});
-  save();alert('Ajustes guardados');
-};
-
-$('agregarMeta').onclick=()=>{
-  const nombre=$('metaNombre').value.trim(),monto=+$('metaMonto').value;
-  if(!nombre||!monto)return alert('Escribe nombre y monto de la meta');
-  state.metas.push({nombre,monto});$('metaNombre').value='';$('metaMonto').value='';save();
-};
-
-$('exportar').onclick=()=>{
-  const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);a.download='respaldo-mi-dinero.json';a.click();
-};
-$('importar').onchange=async e=>{const f=e.target.files[0];if(!f)return;state=JSON.parse(await f.text());save();alert('Respaldo importado')};
-$('borrarTodo').onclick=()=>{if(confirm('¿Borrar todos los datos?')){state={settings:{...DEFAULTS},quincenas:[],mandados:[],metas:[]};save()}};
-
-let wizardStep=0,wizardData={};
-const wizardSteps=[
-  {title:'Paso 1 de 5',html:`<label>¿Cuánto te pagaron?</label><input id="wPago" type="number" step="0.01" value="1260">`},
-  {title:'Paso 2 de 5',html:`<label>¿Ya apartaste tu ahorro?</label><div class="notice">$500 USD se enviarán a tu fondo.</div><select id="wAhorro"><option value="si">Sí</option><option value="no">Todavía no</option></select>`},
-  {title:'Paso 3 de 5',html:`<label>Ticket de compras en EUA</label><input id="wUsa" type="number" step="0.01" placeholder="Ej. 18.45">`},
-  {title:'Paso 4 de 5',html:`<label>Tipo de cambio</label><input id="wCambio" type="number" step="0.01" value="17"><label>Ticket de mandado en México</label><input id="wMex" type="number" step="0.01" placeholder="Ej. 2180">`},
-  {title:'Paso 5 de 5',html:`<div class="notice">Puedes guardar la quincena ahora y completar gasolina después. Quedará En proceso.</div>`}
-];
-function drawWizard(){
-  const s=wizardSteps[wizardStep];
-  $('wizardTitle').textContent=s.title;
-  $('wizardBody').innerHTML=s.html;
-  $('wizardProgress').style.width=((wizardStep+1)/wizardSteps.length*100)+'%';
-  $('wizardBack').style.display=wizardStep===0?'none':'block';
-  $('wizardNext').textContent=wizardStep===wizardSteps.length-1?'Guardar quincena':'Continuar';
-}
-$('wizardNext').onclick=()=>{
-  if(wizardStep===0) wizardData.pago=+$('wPago').value||0;
-  if(wizardStep===1) wizardData.ahorro=$('wAhorro').value;
-  if(wizardStep===2) wizardData.usa=+$('wUsa').value||0;
-  if(wizardStep===3){wizardData.cambio=+$('wCambio').value||0;wizardData.mex=+$('wMex').value||0;}
-  if(wizardStep<wizardSteps.length-1){wizardStep++;drawWizard();return}
-  if(!wizardData.pago||!wizardData.cambio)return alert('Falta el pago o tipo de cambio');
-  const r=resumenQuincena(wizardData.pago,wizardData.cambio);
-  state.quincenas.push({fecha:new Date().toISOString().slice(0,10),pago:wizardData.pago,cambio:wizardData.cambio,...r,
-    fondo:fondoActual()+state.settings.ahorroQuincenal,sobre:sobreActual(),estado:'En proceso'});
-  if(wizardData.usa||wizardData.mex){
-    const su=Math.max(state.settings.mandadoUsa-wizardData.usa,0);
-    const sm=Math.max(state.settings.mandadoMex-wizardData.mex,0);
-    state.mandados.push({fecha:new Date().toISOString().slice(0,10),ticketUsa:wizardData.usa,ticketMex:wizardData.mex,cambio:wizardData.cambio,
-      sobraUsa:su,sobraMex:sm,totalSobre:su*wizardData.cambio+sm});
-  }
-  wizardStep=0;wizardData={};save();drawWizard();alert('Quincena guardada como En proceso');
-};
-$('wizardBack').onclick=()=>{if(wizardStep>0){wizardStep--;drawWizard()}};
-drawWizard();
-
-if('serviceWorker' in navigator) navigator.serviceWorker.register('service-worker.js');
-render();
+const defaults={profile:{name:'Óscar'},settings:{initialUsd:1000,savingUsd:500,usGroceriesUsd:30,medicalUsd:30,mxGroceries:2500,grandma:2600,clarissa:1000,fuelBudget:800,frequencyDays:14,nextPay:'2026-08-02'},accounts:{usd:{name:'Fondo USD principal',currency:'USD',balance:1000},grocery:{name:'Sobre Mandado',currency:'MXN',balance:0},fuel:{name:'Sobre Gasolina',currency:'MXN',balance:0},leftover:{name:'Sobrante de quincena',currency:'MXN',balance:0},cash:{name:'Efectivo disponible',currency:'MXN',balance:0}},openPeriod:null,periods:[],fuelLogs:[],movements:[],subscriptions:[{id:'netflix',name:'Netflix',amount:369,currency:'MXN',date:'2026-08-05',method:''},{id:'crunchy',name:'Crunchyroll',amount:159,currency:'MXN',date:'2026-08-08',method:''},{id:'geforce',name:'GeForce NOW',amount:439,currency:'MXN',date:'2026-08-12',method:''},{id:'youtube',name:'YouTube Premium',amount:159,currency:'MXN',date:'2026-08-15',method:''},{id:'albion',name:'Albion Online',amount:15,currency:'USD',date:'2026-08-20',method:''},{id:'chatgpt',name:'ChatGPT',amount:399,currency:'MXN',date:'2026-08-22',method:''}],credits:[]};
+let state=JSON.parse(localStorage.getItem('zeikon-v1-beta')||'null')||structuredClone(defaults);
+function ensure(){state.profile=state.profile||defaults.profile;state.settings={...defaults.settings,...(state.settings||{})};state.accounts={...structuredClone(defaults.accounts),...(state.accounts||{})};['periods','fuelLogs','movements','subscriptions','credits'].forEach(k=>state[k]=state[k]||[])}
+ensure();
+function save(){localStorage.setItem('zeikon-v1-beta',JSON.stringify(state));render()}
+function go(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));$(id).classList.add('active');document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.go===id));scrollTo(0,0);render()}
+document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
+document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('.tabpage').forEach(x=>x.classList.add('hidden'));$(b.dataset.tab).classList.remove('hidden')});
+function rate(){return state.openPeriod?.rate||state.periods[0]?.rate||17}
+function accountTotalMxn(){return Object.values(state.accounts).reduce((s,a)=>s+(a.currency==='USD'?a.balance*rate():a.balance),0)}
+function fuelSpent(){if(!state.openPeriod)return 0;return state.fuelLogs.filter(f=>f.periodId===state.openPeriod.id).reduce((s,f)=>s+f.total,0)}
+function log(type,account,amount,currency,note){state.movements.unshift({id:crypto.randomUUID(),date:new Date().toISOString(),type,account,amount,currency,note})}
+function calc(p){const usdIncome=p.pay+p.extraUsd;const changed=p.changed||Math.max(0,usdIncome-p.saving-state.settings.usGroceriesUsd-state.settings.medicalUsd);const mxReceived=changed*p.rate+p.extraMxn;const usSurplus=Math.max(0,state.settings.usGroceriesUsd-p.usTicket)*p.rate;const mxSurplus=Math.max(0,state.settings.mxGroceries-p.mxTicket);const grocerySurplus=usSurplus+mxSurplus;const fixed=state.settings.grandma+state.settings.clarissa+state.settings.mxGroceries+state.settings.fuelBudget;const cashBeforeFuel=mxReceived-fixed;return{changed,mxReceived,usSurplus,mxSurplus,grocerySurplus,cashBeforeFuel}}
+function periodFromInputs(){return{id:state.openPeriod?.id||crypto.randomUUID(),date:$('pDate').value,pay:+$('pPay').value||0,saving:+$('pSaving').value||0,extraUsd:+$('pExtraUsd').value||0,extraMxn:+$('pExtraMxn').value||0,usTicket:+$('pUsTicket').value||0,changed:+$('pChanged').value||0,rate:+$('pRate').value||0,mxTicket:+$('pMxTicket').value||0,status:'open'}}
+function preview(){const p=periodFromInputs(),c=calc(p);$('periodPreview').innerHTML=`<div class="row"><span>Pesos recibidos</span><strong>${mx(c.mxReceived)}</strong></div><div class="row"><span>Sobre Mandado</span><strong>${mx(c.grocerySurplus)}</strong></div><div class="row"><span>Efectivo antes de gasolina</span><strong>${mx(c.cashBeforeFuel)}</strong></div>`}
+['pPay','pSaving','pExtraUsd','pExtraMxn','pUsTicket','pChanged','pRate','pMxTicket'].forEach(id=>$(id).oninput=preview);
+$('savePeriod').onclick=()=>{const p=periodFromInputs();Object.assign(p,calc(p));state.openPeriod=p;const i=state.periods.findIndex(x=>x.id===p.id);if(i>=0)state.periods[i]=p;else state.periods.unshift(p);save();alert('Quincena guardada como abierta')}
+$('closePeriod').onclick=()=>{const p=state.openPeriod;if(!p)return alert('No hay quincena abierta');Object.assign(p,calc(p));const spent=fuelSpent(),delta=state.settings.fuelBudget-spent;if(delta>=0){state.accounts.fuel.balance+=delta;log('deposit','fuel',delta,'MXN','Sobrante gasolina')}else p.cashBeforeFuel+=delta;state.accounts.grocery.balance+=p.grocerySurplus;state.accounts.usd.balance+=p.saving;state.accounts.cash.balance+=p.cashBeforeFuel;log('deposit','usd',p.saving,'USD','Ahorro quincenal');if(p.grocerySurplus)log('deposit','grocery',p.grocerySurplus,'MXN','Sobrante mandado');if(p.cashBeforeFuel)log(p.cashBeforeFuel>0?'deposit':'withdraw','cash',Math.abs(p.cashBeforeFuel),'MXN','Cierre de quincena');p.status='closed';p.fuelSpent=spent;p.closedAt=new Date().toISOString();state.openPeriod=null;const d=new Date(state.settings.nextPay+'T12:00:00');d.setDate(d.getDate()+state.settings.frequencyDays);state.settings.nextPay=d.toISOString().slice(0,10);save();alert('Quincena cerrada')}
+$('fDate').value=today();$('pDate').value=today();
+$('fLiters').oninput=()=>{let l=+$('fLiters').value,t=+$('fTotal').value;if(l&&t)$('fPrice').value=(t/l).toFixed(2)};$('fTotal').oninput=()=>$('fLiters').dispatchEvent(new Event('input'));
+$('saveFuel').onclick=()=>{if(!state.openPeriod)return alert('Primero abre una quincena');const total=+$('fTotal').value;if(!total)return alert('Ingresa total');state.fuelLogs.push({id:crypto.randomUUID(),periodId:state.openPeriod.id,vehicle:$('fVehicle').value,date:$('fDate').value,total,liters:+$('fLiters').value||0,price:+$('fPrice').value||0,odometer:+$('fOdo').value||0});['fTotal','fLiters','fPrice','fOdo'].forEach(i=>$(i).value='');save()}
+$('saveMove').onclick=()=>{const id=$('mAccount').value,a=state.accounts[id],amt=+$('mAmount').value;if(!amt)return;if($('mType').value==='withdraw'&&amt>a.balance)return alert('Saldo insuficiente');const type=$('mType').value;a.balance+=type==='deposit'?amt:-amt;log(type,id,amt,a.currency,$('mNote').value);$('mAmount').value='';$('mNote').value='';save()}
+$('saveSub').onclick=()=>{if(!$('sName').value||!+$('sAmount').value)return;state.subscriptions.push({id:crypto.randomUUID(),name:$('sName').value,amount:+$('sAmount').value,currency:$('sCurrency').value,date:$('sDate').value,method:$('sMethod').value});['sName','sAmount','sDate','sMethod'].forEach(i=>$(i).value='');save()}
+$('saveCredit').onclick=()=>{if(!$('cName').value||!+$('cBalance').value)return;state.credits.push({id:crypto.randomUUID(),name:$('cName').value,balance:+$('cBalance').value,monthly:+$('cMonthly').value||0,date:$('cDate').value,status:'active'});['cName','cBalance','cMonthly','cDate'].forEach(i=>$(i).value='');save()}
+window.payCredit=id=>{const c=state.credits.find(x=>x.id===id),amt=+prompt('Cantidad del abono',c.monthly||0);if(!amt)return;c.balance=Math.max(0,c.balance-amt);if(c.balance===0)c.status='paid';log('withdraw','cash',amt,'MXN','Abono crédito '+c.name);state.accounts.cash.balance=Math.max(0,state.accounts.cash.balance-amt);save()}
+window.cancelSub=id=>{const s=state.subscriptions.find(x=>x.id===id);s.cancelled=!s.cancelled;save()}
+$('saveCfg').onclick=()=>{state.profile.name=$('cfgName').value||'Óscar';Object.assign(state.settings,{initialUsd:+$('cfgUsd').value,savingUsd:+$('cfgSaving').value,usGroceriesUsd:+$('cfgUsGroceries').value,mxGroceries:+$('cfgMxGroceries').value,medicalUsd:+$('cfgMedical').value,grandma:+$('cfgGrandma').value,clarissa:+$('cfgClarissa').value,fuelBudget:+$('cfgFuel').value,frequencyDays:+$('cfgFreq').value,nextPay:$('cfgNext').value});save();alert('Configuración guardada')}
+$('exportBtn').onclick=()=>{const b=new Blob([JSON.stringify(state,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='zeikon-wealth-backup.json';a.click()}
+$('importFile').onchange=async e=>{state=JSON.parse(await e.target.files[0].text());ensure();save();alert('Respaldo importado')}
+$('resetBtn').onclick=()=>{if(confirm('¿Borrar todos los datos?')){state=structuredClone(defaults);save()}}
+function render(){ensure();const total=accountTotalMxn(),reserved=state.accounts.usd.balance*rate()+state.accounts.grocery.balance+state.accounts.fuel.balance+state.accounts.leftover.balance;$('hello').textContent='Buenos días, '+state.profile.name;$('netWorth').textContent=mx(total);$('available').textContent=mx(state.accounts.cash.balance);$('reserved').textContent=mx(reserved);$('usdTotal').textContent=usd(state.accounts.usd.balance);$('envTotal').textContent=mx(state.accounts.grocery.balance+state.accounts.fuel.balance+state.accounts.leftover.balance);$('cashTotal').textContent=mx(state.accounts.cash.balance);$('periodState').textContent=state.openPeriod?'En proceso':'Sin iniciar';$('nextPay').textContent=new Date(state.settings.nextPay+'T12:00:00').toLocaleDateString('es-MX',{day:'numeric',month:'short',year:'numeric'});$('savingBase').textContent=usd(state.settings.savingUsd);$('fuelBase').textContent=mx(state.settings.fuelBudget);$('payMode').classList.toggle('hidden',today()!==state.settings.nextPay&&!state.openPeriod);const spent=fuelSpent(),delta=state.settings.fuelBudget-spent;$('fuelSpent').textContent=mx(spent);$('fuelBudget').textContent=mx(state.settings.fuelBudget);$('fuelDelta').textContent=delta>=0?mx(delta)+' al sobre':mx(Math.abs(delta))+' excedente';$('fuelList').innerHTML=(state.openPeriod?state.fuelLogs.filter(f=>f.periodId===state.openPeriod.id):[]).map(f=>`<div class="list-item"><strong>${f.vehicle}</strong><div class="row"><span>${f.date}</span><strong>${mx(f.total)}</strong></div><div class="small">${f.liters||0} L · ${f.price?mx(f.price)+'/L':''} · ${f.odometer?'Odómetro '+f.odometer:''}</div></div>`).join('')||'Sin cargas.';const acc=Object.entries(state.accounts);$('accountsList').innerHTML=acc.map(([id,a])=>`<div class="list-item"><div class="row"><strong>${a.name}</strong><strong class="${a.currency==='USD'?'cyan':'green'}">${a.currency==='USD'?usd(a.balance):mx(a.balance)}</strong></div></div>`).join('');$('mAccount').innerHTML=acc.map(([id,a])=>`<option value="${id}">${a.name}</option>`).join('');$('subsList').innerHTML=state.subscriptions.map(s=>`<div class="list-item"><div class="row"><div><strong>${s.name}</strong><div class="small">${s.date||'Sin fecha'} · ${s.method||'Sin método'}</div></div><strong>${s.currency==='USD'?usd(s.amount):mx(s.amount)}</strong></div><button class="secondary" onclick="cancelSub('${s.id}')">${s.cancelled?'Reactivar':'Cancelar'}</button></div>`).join('')||'Sin suscripciones.';$('creditsList').innerHTML=state.credits.map(c=>`<div class="list-item"><div class="row"><div><strong>${c.name}</strong><div class="small">${c.status==='paid'?'Liquidado':'Próximo '+(c.date||'sin fecha')}</div></div><strong>${mx(c.balance)}</strong></div>${c.status!=='paid'?`<button class="secondary" onclick="payCredit('${c.id}')">Registrar abono</button>`:''}</div>`).join('')||'Sin créditos.';$('history').innerHTML=state.movements.map(m=>`<div class="list-item"><div class="row"><div><strong>${state.accounts[m.account]?.name||m.account}</strong><div class="small">${new Date(m.date).toLocaleString('es-MX')} · ${m.note||''}</div></div><strong class="${m.type==='deposit'?'green':'red'}">${m.type==='deposit'?'+':'-'}${m.currency==='USD'?usd(m.amount):mx(m.amount)}</strong></div></div>`).join('')||'Sin movimientos.';$('recent').innerHTML=state.movements.slice(0,4).map(m=>`<div class="row"><span>${m.note||state.accounts[m.account]?.name}</span><strong class="${m.type==='deposit'?'green':'red'}">${m.type==='deposit'?'+':'-'}${m.currency==='USD'?usd(m.amount):mx(m.amount)}</strong></div>`).join('')||'Sin movimientos.';$('cfgName').value=state.profile.name;$('cfgUsd').value=state.settings.initialUsd;$('cfgSaving').value=state.settings.savingUsd;$('cfgUsGroceries').value=state.settings.usGroceriesUsd;$('cfgMxGroceries').value=state.settings.mxGroceries;$('cfgMedical').value=state.settings.medicalUsd;$('cfgGrandma').value=state.settings.grandma;$('cfgClarissa').value=state.settings.clarissa;$('cfgFuel').value=state.settings.fuelBudget;$('cfgFreq').value=String(state.settings.frequencyDays);$('cfgNext').value=state.settings.nextPay;if(state.openPeriod){const p=state.openPeriod;$('pDate').value=p.date;$('pPay').value=p.pay;$('pSaving').value=p.saving;$('pExtraUsd').value=p.extraUsd;$('pExtraMxn').value=p.extraMxn;$('pUsTicket').value=p.usTicket;$('pChanged').value=p.changed;$('pRate').value=p.rate;$('pMxTicket').value=p.mxTicket}else{$('pSaving').value=state.settings.savingUsd;$('pRate').value=rate()}preview()}
+if('serviceWorker' in navigator)navigator.serviceWorker.register('service-worker.js');render();
 </script>
-</body>
-</html>
+</body></html>

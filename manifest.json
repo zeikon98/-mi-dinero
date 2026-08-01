@@ -1,11 +1,10 @@
 {
-  "name": "Zeikon Wealth",
+  "name": "Zeikon Wealth v1.0 Beta",
   "short_name": "Zeikon",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#0B1220",
-  "theme_color": "#0B1220",
-  "description": "Patrimonio construido con constancia, esfuerzo y lealtad.",
+  "background_color": "#080d19",
+  "theme_color": "#080d19",
   "icons": [
     {
       "src": "icon-192.png",

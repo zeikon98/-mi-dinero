@@ -1,3 +1,3 @@
-# Zeikon Wealth — Sprint 1
+# Zeikon Wealth v1.0 Beta
 
-Dashboard, Assistant de quincena, navegación y almacenamiento local.
+Versión funcional inicial para uso personal.
