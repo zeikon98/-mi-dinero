@@ -1,3 +1,8 @@
-# Zeikon Wealth v1.2.1 Hotfix
+# Zeikon Wealth v1.3
 
-Corrige la navegación de Fuel, Pago, Vault y More.
+- Historial detallado de quincenas
+- Reabrir una quincena cerrada para corregirla
+- Acceso rápido a la quincena abierta desde Home
+- Eliminar cargas de gasolina equivocadas
+- Pantalla Activity mejor organizada
+- Persistencia local y respaldo
